@@ -10,40 +10,7 @@ namespace Fluffy_Relations
 {
     public static class PawnSlotDrawer
     {
-        #region Fields
-
-        private static Dictionary<string, Rect> _labelRect = new Dictionary<string, Rect>();
-
-        #endregion Fields
-
         #region Methods
-
-        public static Rect CacheLabelRect( string name, Rect slot )
-        {
-            // get the width
-            bool WW = Text.WordWrap;
-            Text.WordWrap = false;
-            Text.Font = GameFont.Tiny;
-            float width = Text.CalcSize( name ).x;
-            Text.Font = GameFont.Small;
-            Text.WordWrap = WW;
-
-            // create rect
-            Rect labelRect = new Rect(
-                ( Settings.SlotSize - width ) / 2f + slot.xMin,
-                slot.yMax - Settings.LabelHeight,
-                width,
-                Settings.LabelHeight );
-
-            // cache and return rect
-            _labelRect.Add( name, labelRect );
-            return labelRect;
-        }
-
-        public static void ClearLabelRectCache()
-        {
-            _labelRect = new Dictionary<string, Rect>();
-        }
 
         public static void DrawPawnInSlot( Pawn pawn, Rect slot )
         {
@@ -99,13 +66,13 @@ namespace Fluffy_Relations
             GUI.color = Color.white;
         }
 
-        public static bool DrawSlot( this Pawn pawn, Rect slot, bool drawBG = true, bool drawLabel = true, bool drawLabelBG = true, bool drawHealthBar = true, bool drawStatusIcons = true, string label = "" )
+        public static void DrawSlot( this Pawn pawn, Rect slot, bool drawBG = true, bool drawLabel = true, bool drawLabelBG = true, bool drawHealthBar = true, bool drawStatusIcons = true, string label = "" )
         {
             // catch null pawn
             if ( pawn == null )
             {
                 Widgets.Label( slot, "NULL" );
-                return false;
+                return;
             }
 
             // background square
@@ -114,9 +81,7 @@ namespace Fluffy_Relations
             // name rect
             if ( label == "" )
                 label = pawn.NameStringShort;
-            Rect labelRect;
-            if ( !_labelRect.TryGetValue( label, out labelRect ) )
-                labelRect = CacheLabelRect( label, slot );
+            Rect labelRect = LabelRect( label, slot );
 
             // start drawing
             // draw background square
@@ -140,9 +105,26 @@ namespace Fluffy_Relations
             }
 
             // draw health bar
+        }
 
-            // pass interactions back
-            return Widgets.InvisibleButton( slot );
+        public static Rect LabelRect( string name, Rect slot )
+        {
+            // get the width
+            bool WW = Text.WordWrap;
+            Text.WordWrap = false;
+            Text.Font = GameFont.Tiny;
+            float width = Text.CalcSize( name ).x;
+            Text.Font = GameFont.Small;
+            Text.WordWrap = WW;
+
+            // create rect
+            Rect labelRect = new Rect(
+                ( Settings.SlotSize - width ) / 2f + slot.xMin,
+                slot.yMax - Settings.LabelHeight,
+                width,
+                Settings.LabelHeight );
+
+            return labelRect;
         }
 
         #endregion Methods

@@ -1,0 +1,6 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Source/Fluffy_Relations/obj
+/Source/Fluffy_Relations/.vs/Fluffy_Relations/v14

@@ -9,7 +9,7 @@ namespace Fluffy_Relations
     {
         #region Fields
 
-        public static float IconSize       = 35f;
+        public static float IconSize       = 24f;
         public static float Inset          = 16f;
         public static float LabelHeight    = 16f;
         public static float MinDetailWidth = 200f;
