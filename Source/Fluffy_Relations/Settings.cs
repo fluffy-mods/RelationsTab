@@ -12,6 +12,7 @@ namespace Fluffy_Relations
         public static float IconSize       = 24f;
         public static float Inset          = 16f;
         public static float LabelHeight    = 16f;
+        public static float Margin         = 6f;
         public static float MinDetailWidth = 200f;
         public static float Radians        = (float)Math.PI * 2f;
         public static float RadianTop      = (float)Math.PI / 2f;

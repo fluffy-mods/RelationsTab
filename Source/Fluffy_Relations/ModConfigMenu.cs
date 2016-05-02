@@ -61,6 +61,24 @@ namespace Fluffy_Relations
                 curY += rowHeight + rowMargin;
             }
 
+            // THOUGHT OPTIONS
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.LowerLeft;
+            Widgets.Label( new Rect( 0f, curY, canvas.width, rowHeight * 2 ), "Fluffy_Relations.ThoughtOptions".Translate() );
+            Text.Anchor = TextAnchor.UpperLeft;
+            Text.Font = GameFont.Small;
+            curY += rowHeight * 2;
+
+            foreach ( var thought in DefDatabase<ThoughtDef>.AllDefsListForReading.Where( t => RelationsHelper.THOUGHTS_SOCIAL[t] != Visible.inapplicable ) )
+            {
+                string label = thought.stages?.First()?.label?.CapitalizeFirst() ?? "<UNKNOWN>";
+                Widgets.Label( new Rect( 0f, curY, canvas.width / 3f * 2f, rowHeight ), label );
+                bool active = RelationsHelper.THOUGHTS_SOCIAL[thought] == Visible.visible;
+                Widgets.Checkbox( new Vector2( canvas.width - ( 24f + rowMargin ) * 2f, curY ), ref active );
+                RelationsHelper.THOUGHTS_SOCIAL[thought] = active ? Visible.visible : Visible.hidden;
+                curY += rowHeight + rowMargin;
+            }
+
             // GRAPH OPTIONS
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.LowerLeft;
@@ -183,6 +201,7 @@ namespace Fluffy_Relations
             // TODO: Report bug - uncomment if/when fixed.
             //Scribe_Deep.LookDeep( ref RelationsHelper.RELATIONS_COLOR, "RELATIONS_COLOR" );
             Scribe_Deep.LookDeep( ref RelationsHelper.RELATIONS_VISIBLE, "RELATIONS_VISIBLE" );
+            Scribe_Deep.LookDeep( ref RelationsHelper.THOUGHTS_SOCIAL, "THOUGHTS_SOCIAL" );
         }
 
         #endregion Methods

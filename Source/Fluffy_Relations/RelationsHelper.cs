@@ -9,6 +9,13 @@ using Verse;
 
 namespace Fluffy_Relations
 {
+    public enum Visible
+    {
+        visible,
+        hidden,
+        inapplicable
+    }
+
     public static class RelationsHelper
     {
         #region Fields
@@ -17,6 +24,8 @@ namespace Fluffy_Relations
         public static float OPINION_THRESHOLD_POS = 50f;
         public static DefMap<PawnRelationDef, Color> RELATIONS_COLOR;
         public static DefMap<PawnRelationDef, bool> RELATIONS_VISIBLE;
+        public static DefMap<ThoughtDef, Visible> THOUGHTS_SOCIAL;
+        public static Dictionary<Pawn, List<string>> ThoughtsAbout = new Dictionary<Pawn, List<string>>();
         private static Dictionary<Pair<Pawn,Pawn>, float> _opinions;
 
         #endregion Fields
@@ -27,14 +36,26 @@ namespace Fluffy_Relations
         {
             RELATIONS_VISIBLE = new DefMap<PawnRelationDef, bool>();
             RELATIONS_COLOR = new DefMap<PawnRelationDef, Color>();
+            THOUGHTS_SOCIAL = new DefMap<ThoughtDef, Visible>();
 
+            // give visible relations a sensible default
             var relations = DefDatabase<PawnRelationDef>.AllDefsListForReading;
-
             for ( int i = 0; i < relations.Count; i++ )
             {
                 var relation = relations[i];
                 RELATIONS_VISIBLE[relation] = relation.opinionOffset > OPINION_THRESHOLD_POS / 2f || relation.opinionOffset < OPINION_THRESHOLD_NEG / 2f;
                 RELATIONS_COLOR[relation] = ColorHelper.HSVtoRGB( (float)i / (float)relations.Count, 1f, 1f );
+            }
+
+            // give visible thoughtdefs a sensible default
+            var thoughts = DefDatabase<ThoughtDef>.AllDefsListForReading;
+            foreach ( var thought in thoughts )
+            {
+                Log.Message( thought.defName + "\t" + ( thought.ThoughtClass?.FullName ?? "null" ) );
+                if ( thought.ThoughtClass.GetInterfaces().Contains( typeof( ISocialThought ) ) )
+                    THOUGHTS_SOCIAL[thought] = Visible.visible;
+                else
+                    THOUGHTS_SOCIAL[thought] = Visible.inapplicable;
             }
         }
 
@@ -47,13 +68,13 @@ namespace Fluffy_Relations
             GUI.BeginGroup( canvas );
 
             float curY = 0f;
-            Rect mainDesc = new Rect( 0f, curY, canvas.width, Settings.RowHeight );
-            curY += Settings.RowHeight;
+            Rect mainDescRect = new Rect( 0f, curY, canvas.width, Settings.RowHeight );
+            curY += Settings.RowHeight + Settings.Margin;
+            Rect summaryRect = new Rect( 0f, curY, canvas.width, canvas.height - curY );
 
-            Widgets.Label( mainDesc, pawn.MainDesc( true ) );
-            TooltipHandler.TipRegion( mainDesc, pawn.ageTracker.AgeTooltipString );
-
-            // TODO: Get all stuff that others think about this pawn, and shortly list it here.
+            Widgets.Label( mainDescRect, pawn.MainDesc( true ) );
+            Widgets.Label( summaryRect, "Fluffy_Relations.SocialThoughsOfOthers".Translate() + ": <i>" + String.Join( ", ", ThoughtsAbout[pawn].ToArray() ) + "</i>" );
+            TooltipHandler.TipRegion( mainDescRect, pawn.ageTracker.AgeTooltipString );
 
             GUI.EndGroup();
         }
@@ -113,16 +134,16 @@ namespace Fluffy_Relations
 
         public static string GetTooltip( this Pawn pawn, Pawn other )
         {
-            string tip = "Fluffy_Relations.NodeInteractionTip".Translate( pawn.NameStringShort );
+            string tip = "";
             if ( other != null && other != pawn )
             {
-                tip += "\n";
-                tip += "Fluffy_Relations.Possesive".Translate( other.NameStringShort );
-                tip += "Fluffy_Relations.OpinionOf".Translate( pawn.NameStringShort, Mathf.RoundToInt( other.OpinionOfCached( pawn ) ) );
-                tip += "\n";
                 tip += "Fluffy_Relations.Possesive".Translate( pawn.NameStringShort );
-                tip += "Fluffy_Relations.OpinionOf".Translate( other.NameStringShort, Mathf.RoundToInt( pawn.OpinionOfCached( other ) ) );
+                tip += pawn.relations.OpinionExplanation( other );
+                tip += "\n\n";
+                tip += "Fluffy_Relations.Possesive".Translate( other.NameStringShort );
+                tip += other.relations.OpinionExplanation( pawn );
             }
+            tip += "\n\n" + "Fluffy_Relations.NodeInteractionTip".Translate();
             return tip;
         }
 
@@ -165,6 +186,40 @@ namespace Fluffy_Relations
         public static void ResetOpinionCache()
         {
             _opinions = new Dictionary<Pair<Pawn, Pawn>, float>();
+        }
+
+        internal static void CreateThoughtList( List<Pawn> pawns )
+        {
+            // for each pawn...
+            ThoughtsAbout = new Dictionary<Pawn, List<string>>();
+
+            foreach ( var pawn in pawns )
+            {
+                // add list for this pawn
+                ThoughtsAbout.Add( pawn, new List<string>() );
+
+                // get thoughts targeted at the pawn by all other pawns...
+                foreach ( var other in pawns.Where( p => p != pawn ) )
+                {
+                    ThoughtHandler thoughts = other.needs.mood.thoughts;
+
+                    // get distinct social thoughts
+                    foreach ( ThoughtDef t in thoughts.DistinctSocialThoughtDefs( pawn ).Where( t => THOUGHTS_SOCIAL[t] == Visible.visible ) )
+                    {
+                        Thought thought = thoughts.Thoughts.Find(
+                            ( Thought x ) => x.def == t &&
+                            x is ISocialThought &&
+                            ( (ISocialThought)x ).OpinionOffset( pawn ) != 0f );
+
+                        if ( thought != null )
+                            ThoughtsAbout[pawn].Add( thought.LabelCapSocial );
+                    }
+                }
+
+                // remove duplicates
+                if ( !ThoughtsAbout[pawn].NullOrEmpty() )
+                    ThoughtsAbout[pawn] = ThoughtsAbout[pawn].Distinct().ToList();
+            }
         }
 
         #endregion Methods

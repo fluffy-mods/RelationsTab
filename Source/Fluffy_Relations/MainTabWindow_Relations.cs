@@ -1,6 +1,7 @@
 ﻿using Fluffy_Relations.ForceDirectedGraph;
 using RimWorld;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -463,6 +464,9 @@ namespace Fluffy_Relations
             // recalculate positions
             CreateAreas();
             CreateGraph();
+
+            // create list of social thoughts to pawns
+            RelationsHelper.CreateThoughtList( pawns );
         }
 
         protected override void DrawPawnRow( Rect r, Pawn p )
