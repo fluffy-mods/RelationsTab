@@ -51,7 +51,7 @@ namespace Fluffy_Relations
             var thoughts = DefDatabase<ThoughtDef>.AllDefsListForReading;
             foreach ( var thought in thoughts )
             {
-                Log.Message( thought.defName + "\t" + ( thought.ThoughtClass?.FullName ?? "null" ) );
+                // Log.Message( thought.defName + "\t" + ( thought.ThoughtClass?.FullName ?? "null" ) );
                 if ( thought.ThoughtClass.GetInterfaces().Contains( typeof( ISocialThought ) ) )
                     THOUGHTS_SOCIAL[thought] = Visible.visible;
                 else
