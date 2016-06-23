@@ -202,7 +202,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
                 //    node.Clamp( size );
 
 #if DEBUG
-                msg.AppendLine( "\t" + node.pawn.LabelBaseCap + ", velocity: " + node.velocity + ", position: " + node.position );
+                msg.AppendLine( "\t" + node.pawn.LabelShort + ", velocity: " + node.velocity + ", position: " + node.position );
             }
             Log.Message( msg.ToString() );
 #else

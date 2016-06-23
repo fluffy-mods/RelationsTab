@@ -66,7 +66,7 @@ namespace Fluffy_Relations
             }
         }
 
-        public override Vector2 InitialWindowSize
+        public override Vector2 InitialSize
         {
             get
             {
@@ -261,7 +261,7 @@ namespace Fluffy_Relations
                 DrawFactionRelations();
 
             // see if we can catch clicks in the main rect to reset selections
-            if ( Widgets.InvisibleButton( networkRect ) )
+            if ( Widgets.ButtonInvisible( networkRect ) )
             {
                 if ( CurrentPage == Page.Colonists )
                     SelectedPawn = null;
@@ -290,8 +290,8 @@ namespace Fluffy_Relations
             // titles
             Text.Font = GameFont.Medium;
             Widgets.Label( pawnInfoTitleRect, pawn.Name.ToStringFull );
-            Widgets.Label( relationsTitleRect, "Fluffy_Relations.Possesive".Translate( pawn.LabelBaseShort ) + "Fluffy_Relations.Relations".Translate() );
-            Widgets.Label( interactionsTitleRect, "Fluffy_Relations.Possesive".Translate( pawn.LabelBaseShort ) + "Fluffy_Relations.Interactions".Translate() );
+            Widgets.Label( relationsTitleRect, "Fluffy_Relations.Possesive".Translate( pawn.LabelShort ) + "Fluffy_Relations.Relations".Translate() );
+            Widgets.Label( interactionsTitleRect, "Fluffy_Relations.Possesive".Translate( pawn.LabelShort ) + "Fluffy_Relations.Interactions".Translate() );
             Text.Font = GameFont.Small;
 
             // draw overview of traits and status effects relevant to social relations
@@ -377,7 +377,7 @@ namespace Fluffy_Relations
 
                     Widgets.DrawHighlightIfMouseover( row );
                     Widgets.Label( row, label );
-                    if ( Widgets.InvisibleButton( row ) )
+                    if ( Widgets.ButtonInvisible( row ) )
                         SelectedFaction = otherFaction;
                 }
             }
@@ -434,14 +434,7 @@ namespace Fluffy_Relations
 
             _lastSelectedPawn = null;
         }
-
-        public override void PreOpen()
-        {
-            base.PreOpen();
-
-            Resources.InitIfNeeded();
-        }
-
+        
         public void UpdateSelectedPawn()
         {
             if ( Find.Selector.SingleSelectedThing as Pawn != _lastSelectedPawn )
@@ -479,12 +472,12 @@ namespace Fluffy_Relations
         private void CreateAreas()
         {
             // social network on the right, always square, try to fill the whole height - but limited by width.
-            float networkSize = Mathf.Min( Screen.height - 35f, Screen.width - Settings.MinDetailWidth ) - 2 * WindowPadding;
+            float networkSize = Mathf.Min( Screen.height - 35f, Screen.width - Settings.MinDetailWidth ) - 2 * Margin;
             networkRect = new Rect( 0f, 0f, networkSize, networkSize );
-            networkRect.x = Screen.width - networkSize - 2 * WindowPadding;
+            networkRect.x = Screen.width - networkSize - 2 * Margin;
 
             // detail view on the left, full height (minus what is needed for faction/colonists selection) - fill available width
-            detailRect = new Rect( 0f, 36f, Screen.width - networkSize - WindowPadding * 2, Screen.height - 35f - WindowPadding * 2 );
+            detailRect = new Rect( 0f, 36f, Screen.width - networkSize - Margin * 2, Screen.height - 35f - Margin * 2 );
 
             // selection button rect
             sourceButtonRect = new Rect( 0f, 0f, 200f, 30f );
@@ -502,13 +495,13 @@ namespace Fluffy_Relations
                 TooltipHandler.TipRegion( modeSelectRect, "Fluffy_Relations.ModeCircleTip".Translate() );
                 TooltipHandler.TipRegion( graphResetRect, "Fluffy_Relations.GraphResetTip".Translate() );
 
-                if ( Widgets.ImageButton( modeSelectRect, Resources.DotsCircle ) )
+                if ( Widgets.ButtonImage( modeSelectRect, Resources.DotsCircle ) )
                 {
                     _mode = GraphMode.Circle;
                     BuildPawnList(); // restarts graph
                 }
 
-                if ( Widgets.ImageButton( graphResetRect, TexUI.RotLeftTex ) )
+                if ( Widgets.ButtonImage( graphResetRect, TexUI.RotLeftTex ) )
                 {
                     BuildPawnList();
                 }
@@ -517,7 +510,7 @@ namespace Fluffy_Relations
             {
                 TooltipHandler.TipRegion( modeSelectRect, "Fluffy_Relations.ModeGraphTip".Translate() );
 
-                if ( Widgets.ImageButton( modeSelectRect, Resources.DotsDynamic ) )
+                if ( Widgets.ButtonImage( modeSelectRect, Resources.DotsDynamic ) )
                 {
                     _mode = GraphMode.ForceDirected;
                     BuildPawnList(); // restarts graph
@@ -530,14 +523,14 @@ namespace Fluffy_Relations
             // draw source selection rect
             if ( CurrentPage == Page.Colonists )
             {
-                if ( Widgets.TextButton( sourceButtonRect, "Fluffy_Relations.Colonists".Translate() ) )
+                if ( Widgets.ButtonText( sourceButtonRect, "Fluffy_Relations.Colonists".Translate() ) )
                 {
                     CurrentPage = Page.Factions;
                 }
             }
             if ( CurrentPage == Page.Factions )
             {
-                if ( Widgets.TextButton( sourceButtonRect, "Fluffy_Relations.Factions".Translate() ) )
+                if ( Widgets.ButtonText( sourceButtonRect, "Fluffy_Relations.Factions".Translate() ) )
                 {
                     CurrentPage = Page.Colonists;
                 }

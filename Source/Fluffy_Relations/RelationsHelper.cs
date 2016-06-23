@@ -1,4 +1,5 @@
-﻿using CommunityCoreLibrary.ColorPicker;
+﻿// TODO: Waiting for CCL
+// using CommunityCoreLibrary.ColorPicker;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,8 @@ namespace Fluffy_Relations
             {
                 var relation = relations[i];
                 RELATIONS_VISIBLE[relation] = relation.opinionOffset > OPINION_THRESHOLD_POS / 2f || relation.opinionOffset < OPINION_THRESHOLD_NEG / 2f;
-                RELATIONS_COLOR[relation] = ColorHelper.HSVtoRGB( (float)i / (float)relations.Count, 1f, 1f );
+                RELATIONS_COLOR[relation] = GenColor.RandomColorOpaque();
+                    // TODO: Watiting for CCL ColorHelper.HSVtoRGB( (float)i / (float)relations.Count, 1f, 1f );
             }
 
             // give visible thoughtdefs a sensible default
@@ -160,7 +162,7 @@ namespace Fluffy_Relations
 
         public static Pawn Leader( this Faction faction )
         {
-            if ( faction == Faction.OfColony )
+            if ( faction == Faction.OfPlayer )
                 return Find.MapPawns.FreeColonists.First();
 
             if ( faction.leader == null )
@@ -204,14 +206,10 @@ namespace Fluffy_Relations
                     ThoughtHandler thoughts = other.needs.mood.thoughts;
 
                     // get distinct social thoughts
-                    foreach ( ThoughtDef t in thoughts.DistinctSocialThoughtDefs( pawn ).Where( t => THOUGHTS_SOCIAL[t] == Visible.visible ) )
+                    foreach ( ISocialThought t in thoughts.DistinctSocialThoughtGroups( pawn ) )
                     {
-                        Thought thought = thoughts.Thoughts.Find(
-                            ( Thought x ) => x.def == t &&
-                            x is ISocialThought &&
-                            ( (ISocialThought)x ).OpinionOffset( pawn ) != 0f );
-
-                        if ( thought != null )
+                        Thought thought = (Thought)t;
+                        if ( THOUGHTS_SOCIAL[thought.def] == Visible.visible && t.OpinionOffset() != 0 )
                             ThoughtsAbout[pawn].Add( thought.LabelCapSocial );
                     }
                 }

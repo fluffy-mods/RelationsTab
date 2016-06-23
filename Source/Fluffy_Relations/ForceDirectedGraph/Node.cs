@@ -106,7 +106,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
                 PreDrawExtras();
 
             // draw basic slot
-            PawnSlotDrawer.DrawSlot( pawn, slot, false, label: pawn.LabelBaseShort );
+            PawnSlotDrawer.DrawSlot( pawn, slot, false, label: pawn.LabelShort );
 
             // call extra draw handlers
             if ( PostDrawExtras != null )
@@ -140,7 +140,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
             }
 
             // clicks
-            if ( Widgets.InvisibleButton( slot ) && !wasDragged )
+            if ( Widgets.ButtonInvisible( slot ) && !wasDragged )
             {
                 // on right click
                 if ( Event.current.button == 1 && OnRightClick != null )
