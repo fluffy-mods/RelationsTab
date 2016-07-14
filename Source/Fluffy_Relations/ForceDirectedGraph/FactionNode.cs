@@ -50,7 +50,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
                 PreDrawExtras();
 
             // draw basic slot, with faction label
-            PawnSlotDrawer.DrawSlot( pawn, slot, false, label: faction.GetCallLabel() );
+            PawnSlotDrawer.DrawSlot( pawn, slot, false, label: faction.GetFactionLabel() );
 
             // call extra draw handlers
             if ( PostDrawExtras != null )
