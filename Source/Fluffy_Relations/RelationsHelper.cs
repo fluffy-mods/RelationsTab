@@ -33,6 +33,11 @@ namespace Fluffy_Relations
 
         #region Constructors
 
+        public static string GetFactionLabel( this Faction faction )
+        {
+            return faction == Faction.OfPlayer ? "Fluffy.Relations.Colony".Translate() : faction.GetCallLabel();
+        }
+
         static RelationsHelper()
         {
             RELATIONS_VISIBLE = new DefMap<PawnRelationDef, bool>();
@@ -45,8 +50,7 @@ namespace Fluffy_Relations
             {
                 var relation = relations[i];
                 RELATIONS_VISIBLE[relation] = relation.opinionOffset > OPINION_THRESHOLD_POS / 2f || relation.opinionOffset < OPINION_THRESHOLD_NEG / 2f;
-                RELATIONS_COLOR[relation] = GenColor.RandomColorOpaque();
-                    // TODO: Watiting for CCL ColorHelper.HSVtoRGB( (float)i / (float)relations.Count, 1f, 1f );
+                RELATIONS_COLOR[relation] = Color.HSVToRGB( (float) i / (float) relations.Count, 1f, 1f );
             }
 
             // give visible thoughtdefs a sensible default

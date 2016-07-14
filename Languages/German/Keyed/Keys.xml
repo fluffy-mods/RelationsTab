@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  <Fluffy_Relations.ClickToSelect>Klicke zum auswählen von {0}.</Fluffy_Relations.ClickToSelect>
+  <Fluffy_Relations.Possesive>{0}'s </Fluffy_Relations.Possesive>
+  <Fluffy_Relations.Colonists>Kolonisten</Fluffy_Relations.Colonists>
+  <Fluffy_Relations.Factions>Fraktionen</Fluffy_Relations.Factions>
+  <Fluffy_Relations.SourceButtonTip>Wähle zwischen Kolonisten und Fraktionen</Fluffy_Relations.SourceButtonTip>
+  <Fluffy_Relations.Relations>Beziehungen</Fluffy_Relations.Relations>
+  <Fluffy_Relations.Interactions>Interaktionen</Fluffy_Relations.Interactions>
+  <Fluffy_Relations.KidnappedColonists>Entführte Kolonisten</Fluffy_Relations.KidnappedColonists>
+  <Fluffy_Relations.OpinionOf> Meinung zu {0}: {1}</Fluffy_Relations.OpinionOf>
+  <Fluffy_Relations.NothingSelected></Fluffy_Relations.NothingSelected>
+</LanguageData>

@@ -320,8 +320,8 @@ namespace Fluffy_Relations
 
             // draw titles
             Text.Font = GameFont.Medium;
-            Widgets.Label( informationTitleRect, faction.GetCallLabel() );
-            Widgets.Label( relationsTitleRect, "Fluffy_Relations.Possesive".Translate( faction.GetCallLabel() ) + "Fluffy_Relations.Relations".Translate() );
+            Widgets.Label( informationTitleRect, faction.GetFactionLabel() );
+            Widgets.Label( relationsTitleRect, "Fluffy_Relations.Possesive".Translate( faction.GetFactionLabel() ) + "Fluffy_Relations.Relations".Translate() );
             Text.Font = GameFont.Small;
 
             // information
@@ -358,21 +358,21 @@ namespace Fluffy_Relations
 
             foreach ( Faction otherFaction in Find.FactionManager
                                                   .AllFactionsVisible
-                                                  .Where( of => of != faction &&
-                                                          of.RelationWith( faction, true ) != null )
+                                                  .Where( other => other != faction &&
+                                                          other.RelationWith( faction, true ) != null )
                                                   .OrderByDescending( of => of.GoodwillWith( faction ) ) )
             {
                 {
                     Rect row = new Rect( 0f, curY, canvas.width, Settings.RowHeight );
                     curY += Settings.RowHeight;
 
-                    int opinion = Mathf.RoundToInt( faction.GoodwillWith( otherFaction ) );
+                    int opinion = Mathf.RoundToInt( otherFaction.GoodwillWith( faction ) );
                     GUI.color = RelationsHelper.GetRelationColor( opinion );
                     string label = "";
                     if ( faction.HostileTo( otherFaction ) )
                         label = "HostileTo".Translate( otherFaction.GetCallLabel() );
                     else
-                        label = otherFaction.GetCallLabel();
+                        label = otherFaction.GetFactionLabel();
                     label += ": " + opinion;
 
                     Widgets.DrawHighlightIfMouseover( row );
