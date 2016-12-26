@@ -164,10 +164,16 @@ namespace Fluffy_Relations
             return tip;
         }
 
+        public static IEnumerable<Pawn> Colonists
+        {
+            get { return Find.ColonistBar.Entries.Select( e => e.pawn ); }
+        }
+
         public static Pawn Leader( this Faction faction )
         {
+            // Oldest is leader.
             if ( faction == Faction.OfPlayer )
-                return Find.MapPawns.FreeColonists.First();
+                return Colonists.OrderByDescending( p => p.ageTracker.AgeBiologicalTicks ).First();
 
             if ( faction.leader == null )
                 faction.GenerateNewLeader();
@@ -210,7 +216,9 @@ namespace Fluffy_Relations
                     ThoughtHandler thoughts = other.needs.mood.thoughts;
 
                     // get distinct social thoughts
-                    foreach ( ISocialThought t in thoughts.DistinctSocialThoughtGroups( pawn ) )
+                    var DistinctSocialThoughtGroups = new List<ISocialThought>();
+                    thoughts.GetDistinctSocialThoughtGroups( pawn, DistinctSocialThoughtGroups );
+                    foreach ( ISocialThought t in DistinctSocialThoughtGroups )
                     {
                         Thought thought = (Thought)t;
                         if ( THOUGHTS_SOCIAL[thought.def] == Visible.visible && t.OpinionOffset() != 0 )
