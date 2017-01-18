@@ -39,7 +39,10 @@ namespace Fluffy_Relations
         private Rect networkRect;
         private Rect sourceButtonRect;
 
-        public MainTabWindow_Relations() { forcePause = true; }
+        public MainTabWindow_Relations()
+        {
+            forcePause = true;
+        }
 
         public Page CurrentPage
         {
@@ -132,6 +135,12 @@ namespace Fluffy_Relations
                 // start adaptive process
                 graph.Restart();
             }
+        }
+
+        public override void PreOpen()
+        {
+            base.PreOpen();
+            _selectedFaction = Faction.OfPlayer;
         }
 
         public void CreateCircle()
