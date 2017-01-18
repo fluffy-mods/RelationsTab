@@ -4,8 +4,8 @@ Replaces the faction tab with a relations tab. The relations tab shows, in a ver
 
 
 # Contributors
-MossieurLeBlanc	French translation
-Jozay	
+ - MossieurLeBlanc:	French translation
+ - Jozay:	
 
 # Think you found a bug? 
 Please read [this guide](http://steamcommunity.com/sharedfiles/filedetails/?id=725234314) before creating a bug report,

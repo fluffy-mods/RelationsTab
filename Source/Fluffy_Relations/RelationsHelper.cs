@@ -35,7 +35,9 @@ namespace Fluffy_Relations
 
         public static string GetFactionLabel( this Faction faction )
         {
-            return faction == Faction.OfPlayer ? "Fluffy.Relations.Colony".Translate() : faction.GetCallLabel();
+            if ( faction == null )
+                throw new ArgumentNullException( nameof( faction ) );
+            return faction == Faction.OfPlayer ? faction.HasName ? faction.Name : "Fluffy.Relations.Colony".Translate() : faction.GetCallLabel();
         }
 
         static RelationsHelper()
