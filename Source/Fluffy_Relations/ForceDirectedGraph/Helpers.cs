@@ -60,6 +60,33 @@ namespace Fluffy_Relations.ForceDirectedGraph
             Widgets.DrawLine( to, arrowB, color, 1f );
         }
 
+        public static void DrawBiDirectionalArrow( Vector2 from, Vector2 to, Color color )
+        {
+            // get the normalized direction of the line, offset for parallel lines, and directions of arrow head lines
+            Vector2 direction = from.DirectionTo( to );
+            Vector2 arrowDirectionA = direction.RotatedBy( 145f );
+            Vector2 arrowDirectionB = direction.RotatedBy( 215f );
+
+            // start a little away from 'real' start, and offset to avoid overlapping
+            from += direction * 35f;
+
+            // end 40 px away from 'real' end
+            to -= direction * 35f;
+
+            // arrow end points
+            Vector2 arrowA1 = to + arrowDirectionA * 6f;
+            Vector2 arrowA2 = to + arrowDirectionB * 6f;
+            Vector2 arrowB1 = from - arrowDirectionA * 6f;
+            Vector2 arrowB2 = from - arrowDirectionB * 6f;
+
+            // draw the lines
+            Widgets.DrawLine( from, to, color, 1f );
+            Widgets.DrawLine( to, arrowA1, color, 1f );
+            Widgets.DrawLine( to, arrowA2, color, 1f );
+            Widgets.DrawLine( from, arrowB1, color, 1f );
+            Widgets.DrawLine( from, arrowB2, color, 1f );
+        }
+
         public static Vector2 PointOnCircle( int i, int count, Vector2 center, float radius )
         {
             float spread = 2 * Mathf.PI / count;

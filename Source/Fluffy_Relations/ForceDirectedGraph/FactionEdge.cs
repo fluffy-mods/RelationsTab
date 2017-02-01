@@ -40,8 +40,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
                 opinion = factionA.GoodwillWith( factionB );
 
             // draw lines
-            Helpers.DrawArrow( nodeA.position, nodeB.position, RelationsHelper.GetRelationColor( opinion ) );
-            Helpers.DrawArrow( nodeB.position, nodeA.position, RelationsHelper.GetRelationColor( opinion ) );
+            Helpers.DrawBiDirectionalArrow( nodeA.position, nodeB.position, RelationsHelper.GetRelationColor( opinion ) );
         }
 
         #endregion Methods
