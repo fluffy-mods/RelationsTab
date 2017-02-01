@@ -165,8 +165,7 @@ namespace Fluffy_Relations
             if ( CurrentPage == Page.Colonists )
             {
                 // initialize list of nodes
-                graph.nodes =
-                    pawns.Select( pawn => new PawnNode( pawn, networkRect.RandomPoint(), graph ) as Node ).ToList();
+                graph.nodes = pawns.Select( pawn => new PawnNode( pawn, networkRect.RandomPoint(), graph ) as Node ).ToList();
                 foreach ( Node node in graph.nodes )
                 {
                     // attach event handlers to node
@@ -191,11 +190,11 @@ namespace Fluffy_Relations
             }
             else
             {
-                graph.nodes =
-                    Find.FactionManager.AllFactionsInViewOrder.Select(
-                                                                      f =>
-                                                                      new FactionNode( f, networkRect.RandomPoint(),
-                                                                                       graph ) as Node ).ToList();
+                graph.nodes = Find.FactionManager
+                                  .AllFactionsInViewOrder.Select( f => new FactionNode( f, networkRect.RandomPoint(), graph ) as Node )
+                                  .Where( n => n.pawn != null )
+                                  .ToList();
+
                 foreach ( Node node in graph.nodes )
                 {
                     // attach event handlers to node
@@ -335,7 +334,7 @@ namespace Fluffy_Relations
             curY += Settings.RowHeight;
 
             Widgets.Label( factionTypeRect, faction.def.LabelCap + " (" + faction.def.techLevel + ")" );
-            Widgets.Label( factionLeaderRect, faction.def.leaderTitle + ": " + faction.Leader().Name );
+            Widgets.Label( factionLeaderRect, faction.def.leaderTitle + ": " + ( faction.Leader()?.Name.ToStringFull ?? "Noone".Translate() ));
             if ( faction.kidnapped?.KidnappedPawnsListForReading.Count > 0 )
             {
                 Widgets.Label( kidnappedRect, "Fluffy_Relations.KidnappedColonists".Translate() + ":" );

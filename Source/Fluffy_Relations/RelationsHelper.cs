@@ -1,22 +1,16 @@
-﻿// TODO: Waiting for CCL
-// using CommunityCoreLibrary.ColorPicker;
+﻿// Karel Kroeze
+// RelationsHelper.cs
+// 2016-12-26
+
 using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using Verse;
 
 namespace Fluffy_Relations
 {
-    public enum Visible
-    {
-        visible,
-        hidden,
-        inapplicable
-    }
-
     public static class RelationsHelper
     {
         #region Fields
@@ -26,18 +20,11 @@ namespace Fluffy_Relations
         public static DefMap<PawnRelationDef, Color> RELATIONS_COLOR;
         public static DefMap<PawnRelationDef, bool> RELATIONS_VISIBLE;
         public static Dictionary<Pawn, List<string>> ThoughtsAbout = new Dictionary<Pawn, List<string>>();
-        private static Dictionary<Pair<Pawn,Pawn>, float> _opinions;
+        private static Dictionary<Pair<Pawn, Pawn>, float> _opinions;
 
         #endregion Fields
 
         #region Constructors
-
-        public static string GetFactionLabel( this Faction faction )
-        {
-            if ( faction == null )
-                throw new ArgumentNullException( nameof( faction ) );
-            return faction == Faction.OfPlayer ? faction.HasName ? faction.Name : "Fluffy.Relations.Colony".Translate() : faction.GetCallLabel();
-        }
 
         static RelationsHelper()
         {
@@ -45,32 +32,42 @@ namespace Fluffy_Relations
             RELATIONS_COLOR = new DefMap<PawnRelationDef, Color>();
 
             // give visible relations a sensible default
-            var relations = DefDatabase<PawnRelationDef>.AllDefsListForReading;
-            for ( int i = 0; i < relations.Count; i++ )
+            List<PawnRelationDef> relations = DefDatabase<PawnRelationDef>.AllDefsListForReading;
+            for ( var i = 0; i < relations.Count; i++ )
             {
-                var relation = relations[i];
-                RELATIONS_VISIBLE[relation] = relation.opinionOffset > OPINION_THRESHOLD_POS / 2f || relation.opinionOffset < OPINION_THRESHOLD_NEG / 2f;
-                RELATIONS_COLOR[relation] = Color.HSVToRGB( (float) i / (float) relations.Count, 1f, 1f );
+                PawnRelationDef relation = relations[i];
+                RELATIONS_VISIBLE[relation] = relation.opinionOffset > OPINION_THRESHOLD_POS / 2f ||
+                                              relation.opinionOffset < OPINION_THRESHOLD_NEG / 2f;
+                RELATIONS_COLOR[relation] = Color.HSVToRGB( i / (float)relations.Count, 1f, 1f );
             }
         }
 
         #endregion Constructors
 
-        #region Methods
+        #region Properties
 
-        public static bool IsSocialThought( Thought thought ) { return thought is ISocialThought; }
+        public static IEnumerable<Pawn> Colonists
+        {
+            get { return Find.ColonistBar.Entries.Select( e => e.pawn ); }
+        }
+
+        #endregion Properties
+
+        #region Methods
 
         public static void DrawSocialStatusEffectsSummary( Rect canvas, Pawn pawn )
         {
             GUI.BeginGroup( canvas );
 
-            float curY = 0f;
-            Rect mainDescRect = new Rect( 0f, curY, canvas.width, Settings.RowHeight );
+            var curY = 0f;
+            var mainDescRect = new Rect( 0f, curY, canvas.width, Settings.RowHeight );
             curY += Settings.RowHeight + Settings.Margin;
-            Rect summaryRect = new Rect( 0f, curY, canvas.width, canvas.height - curY );
+            var summaryRect = new Rect( 0f, curY, canvas.width, canvas.height - curY );
 
             Widgets.Label( mainDescRect, pawn.MainDesc( true ) );
-            Widgets.Label( summaryRect, "Fluffy_Relations.SocialThoughsOfOthers".Translate() + ": <i>" + String.Join( ", ", ThoughtsAbout[pawn].ToArray() ) + "</i>" );
+            Widgets.Label( summaryRect,
+                           "Fluffy_Relations.SocialThoughsOfOthers".Translate() + ": <i>" +
+                           String.Join( ", ", ThoughtsAbout[pawn].ToArray() ) + "</i>" );
             TooltipHandler.TipRegion( mainDescRect, pawn.ageTracker.AgeTooltipString );
 
             GUI.EndGroup();
@@ -78,7 +75,20 @@ namespace Fluffy_Relations
 
         public static List<Pawn> GetDirectlyRelatedPawns( this Pawn pawn )
         {
-            return pawn.relations.DirectRelations.Where( rel => RELATIONS_VISIBLE[rel.def] ).Select( rel => rel.otherPawn ).ToList();
+            return
+                pawn.relations.DirectRelations.Where( rel => RELATIONS_VISIBLE[rel.def] )
+                    .Select( rel => rel.otherPawn )
+                    .ToList();
+        }
+
+        public static string GetFactionLabel( this Faction faction )
+        {
+            if ( faction == null )
+                throw new ArgumentNullException( nameof( faction ) );
+
+            return faction == Faction.OfPlayer
+                       ? faction.HasName ? faction.Name : "Fluffy.Relations.Colony".Translate()
+                       : faction.GetCallLabel();
         }
 
         // RimWorld.PawnRelationUtility
@@ -92,6 +102,7 @@ namespace Fluffy_Relations
                     def = current;
                 }
             }
+
             return def;
         }
 
@@ -101,11 +112,12 @@ namespace Fluffy_Relations
             List<Pawn> relatedPawns = pawn.GetDirectlyRelatedPawns();
 
             // opinions above threshold
-            foreach ( var other in options )
+            foreach ( Pawn other in options )
             {
                 float maxOpinion = Mathf.Max( pawn.OpinionOfCached( other ), other.OpinionOfCached( pawn ) );
                 float minOpinion = Mathf.Min( pawn.OpinionOfCached( other ), other.OpinionOfCached( pawn ) );
-                if ( ( selected && ( maxOpinion > 5f || minOpinion < -5f ) ) || maxOpinion > OPINION_THRESHOLD_POS || minOpinion < OPINION_THRESHOLD_NEG )
+                if ( ( selected && ( maxOpinion > 5f || minOpinion < -5f ) ) || maxOpinion > OPINION_THRESHOLD_POS ||
+                     minOpinion < OPINION_THRESHOLD_NEG )
                     relatedPawns.Add( other );
             }
 
@@ -117,6 +129,7 @@ namespace Fluffy_Relations
         {
             if ( def != null && RELATIONS_VISIBLE[def] )
                 return RELATIONS_COLOR[def];
+
             return GetRelationColor( opinion );
         }
 
@@ -126,12 +139,13 @@ namespace Fluffy_Relations
                 return Color.Lerp( Resources.ColorNeutral, Resources.ColorFriend, opinion / 100f );
             if ( opinion < 0f )
                 return Color.Lerp( Resources.ColorNeutral, Resources.ColorEnemy, Mathf.Abs( opinion ) / 100f );
+
             return Resources.ColorNeutral;
         }
 
         public static string GetTooltip( this Pawn pawn, Pawn other )
         {
-            string tip = "";
+            var tip = "";
             if ( other != null && other != pawn )
             {
                 tip += "Fluffy_Relations.Possesive".Translate( pawn.NameStringShort );
@@ -150,21 +164,52 @@ namespace Fluffy_Relations
             if ( other != null && other != faction )
             {
                 tip += "Fluffy_Relations.Possesive".Translate( other.GetCallLabel() );
-                tip += "Fluffy_Relations.OpinionOf".Translate( faction.GetCallLabel(), Mathf.RoundToInt( other.GoodwillWith( faction ) ) );
+                tip += "Fluffy_Relations.OpinionOf".Translate( faction.GetCallLabel(),
+                                                               Mathf.RoundToInt( other.GoodwillWith( faction ) ) );
             }
             return tip;
         }
 
-        public static IEnumerable<Pawn> Colonists
+        public static bool IsSocialThought( Thought thought )
         {
-            get { return Find.ColonistBar.Entries.Select( e => e.pawn ); }
+            return thought is ISocialThought;
         }
 
+        private static HediffDef _majorHediffDef;
+        private static bool _psychologyLoaded = true;
+
+        public static Pawn GetMayor()
+        {
+            // cop out if we checked the mayor def and it wasn't there
+            if ( !_psychologyLoaded )
+                return null;
+
+            // if major def is null and we haven't checked yet, check for the def (and thus for psychology being loaded)
+            if ( _majorHediffDef == null && _psychologyLoaded)
+            {
+                _majorHediffDef = DefDatabase<HediffDef>.GetNamedSilentFail( "Mayor" );
+                _psychologyLoaded = _majorHediffDef != null;
+
+                // check done, call again
+                return GetMayor();
+            }
+
+            // if we got here, that means psychology is loaded. return the pawn with the mayor def, if any.
+            return Colonists.FirstOrDefault( p => p.health.hediffSet.HasHediff( _majorHediffDef ) );
+        }
+        
         public static Pawn Leader( this Faction faction )
         {
-            // Oldest is leader.
+            
+            // player faction, see if we have a major (Psychology), if not - oldest is leader.
             if ( faction == Faction.OfPlayer )
-                return Colonists.OrderByDescending( p => p.ageTracker.AgeBiologicalTicks ).First();
+            {
+                var leader = GetMayor();
+                if ( leader == null && Colonists.Any() )
+                    leader = Colonists.MaxBy( p => p.ageTracker.AgeBiologicalTicks );
+
+                return leader;
+            }
 
             if ( faction.leader == null )
                 faction.GenerateNewLeader();
@@ -181,8 +226,10 @@ namespace Fluffy_Relations
                 _opinions.Add( pair, opinion );
                 return opinion;
             }
+
             if ( abs )
                 return Mathf.Abs( _opinions[pair] );
+
             return _opinions[pair];
         }
 
@@ -196,13 +243,13 @@ namespace Fluffy_Relations
             // for each pawn...
             ThoughtsAbout = new Dictionary<Pawn, List<string>>();
 
-            foreach ( var pawn in pawns )
+            foreach ( Pawn pawn in pawns )
             {
                 // add list for this pawn
                 ThoughtsAbout.Add( pawn, new List<string>() );
 
                 // get thoughts targeted at the pawn by all other pawns...
-                foreach ( var other in pawns.Where( p => p != pawn ) )
+                foreach ( Pawn other in pawns.Where( p => p != pawn ) )
                 {
                     ThoughtHandler thoughts = other.needs.mood.thoughts;
 
@@ -211,7 +258,7 @@ namespace Fluffy_Relations
                     thoughts.GetDistinctSocialThoughtGroups( pawn, DistinctSocialThoughtGroups );
                     foreach ( ISocialThought t in DistinctSocialThoughtGroups )
                     {
-                        Thought thought = (Thought)t;
+                        var thought = (Thought)t;
                         if ( t.OpinionOffset() != 0 )
                             ThoughtsAbout[pawn].Add( thought.LabelCapSocial );
                     }

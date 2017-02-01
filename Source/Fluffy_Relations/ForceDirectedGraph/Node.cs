@@ -102,15 +102,13 @@ namespace Fluffy_Relations.ForceDirectedGraph
         public virtual void Draw()
         {
             // call extra draw handlers
-            if ( PreDrawExtras != null )
-                PreDrawExtras();
+            PreDrawExtras?.Invoke();
 
             // draw basic slot
-            PawnSlotDrawer.DrawSlot( pawn, slot, false, label: pawn.LabelShort );
+            pawn.DrawSlot( slot, false, label: pawn?.LabelShort );
 
             // call extra draw handlers
-            if ( PostDrawExtras != null )
-                PostDrawExtras();
+            PostDrawExtras?.Invoke();
 
             // do interactions, with all their handlers and stuff
             Interactions();

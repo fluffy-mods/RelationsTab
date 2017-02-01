@@ -14,6 +14,11 @@ namespace Fluffy_Relations.ForceDirectedGraph
 
         public FactionNode( Faction faction, Vector2 position, Graph graph, bool frozen = false ) : base( faction.Leader(), position, graph, frozen )
         {
+            if ( faction == null )
+                throw new ArgumentNullException( nameof( faction ) );
+            if ( faction.Leader() == null )
+                Log.Warning( $"Faction {faction.GetFactionLabel()} has no leader, and will not be shown in faction view!" );
+
             this.faction = faction;
         }
 
@@ -46,15 +51,13 @@ namespace Fluffy_Relations.ForceDirectedGraph
         public override void Draw()
         {
             // call extra draw handlers
-            if ( PreDrawExtras != null )
-                PreDrawExtras();
+            PreDrawExtras?.Invoke();
 
             // draw basic slot, with faction label
             PawnSlotDrawer.DrawSlot( pawn, slot, false, label: faction.GetFactionLabel() );
 
             // call extra draw handlers
-            if ( PostDrawExtras != null )
-                PostDrawExtras();
+            PostDrawExtras?.Invoke();
 
             // do interactions, with all their handlers and stuff
             Interactions();
