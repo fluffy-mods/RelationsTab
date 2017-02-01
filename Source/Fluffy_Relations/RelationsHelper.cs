@@ -25,7 +25,6 @@ namespace Fluffy_Relations
         public static float OPINION_THRESHOLD_POS = 50f;
         public static DefMap<PawnRelationDef, Color> RELATIONS_COLOR;
         public static DefMap<PawnRelationDef, bool> RELATIONS_VISIBLE;
-        public static DefMap<ThoughtDef, Visible> THOUGHTS_SOCIAL;
         public static Dictionary<Pawn, List<string>> ThoughtsAbout = new Dictionary<Pawn, List<string>>();
         private static Dictionary<Pair<Pawn,Pawn>, float> _opinions;
 
@@ -44,7 +43,6 @@ namespace Fluffy_Relations
         {
             RELATIONS_VISIBLE = new DefMap<PawnRelationDef, bool>();
             RELATIONS_COLOR = new DefMap<PawnRelationDef, Color>();
-            THOUGHTS_SOCIAL = new DefMap<ThoughtDef, Visible>();
 
             // give visible relations a sensible default
             var relations = DefDatabase<PawnRelationDef>.AllDefsListForReading;
@@ -54,22 +52,13 @@ namespace Fluffy_Relations
                 RELATIONS_VISIBLE[relation] = relation.opinionOffset > OPINION_THRESHOLD_POS / 2f || relation.opinionOffset < OPINION_THRESHOLD_NEG / 2f;
                 RELATIONS_COLOR[relation] = Color.HSVToRGB( (float) i / (float) relations.Count, 1f, 1f );
             }
-
-            // give visible thoughtdefs a sensible default
-            var thoughts = DefDatabase<ThoughtDef>.AllDefsListForReading;
-            foreach ( var thought in thoughts )
-            {
-                // Log.Message( thought.defName + "\t" + ( thought.ThoughtClass?.FullName ?? "null" ) );
-                if ( thought.ThoughtClass.GetInterfaces().Contains( typeof( ISocialThought ) ) )
-                    THOUGHTS_SOCIAL[thought] = Visible.visible;
-                else
-                    THOUGHTS_SOCIAL[thought] = Visible.inapplicable;
-            }
         }
 
         #endregion Constructors
 
         #region Methods
+
+        public static bool IsSocialThought( Thought thought ) { return thought is ISocialThought; }
 
         public static void DrawSocialStatusEffectsSummary( Rect canvas, Pawn pawn )
         {
@@ -223,7 +212,7 @@ namespace Fluffy_Relations
                     foreach ( ISocialThought t in DistinctSocialThoughtGroups )
                     {
                         Thought thought = (Thought)t;
-                        if ( THOUGHTS_SOCIAL[thought.def] == Visible.visible && t.OpinionOffset() != 0 )
+                        if ( t.OpinionOffset() != 0 )
                             ThoughtsAbout[pawn].Add( thought.LabelCapSocial );
                     }
                 }
