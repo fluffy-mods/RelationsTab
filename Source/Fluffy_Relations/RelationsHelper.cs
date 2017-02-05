@@ -48,7 +48,7 @@ namespace Fluffy_Relations
 
         public static IEnumerable<Pawn> Colonists
         {
-            get { return Find.ColonistBar.Entries.Select( e => e.pawn ); }
+            get { return Find.ColonistBar.Entries.Select( e => e.pawn ).OfType<Pawn>(); }
         }
 
         #endregion Properties
@@ -203,7 +203,6 @@ namespace Fluffy_Relations
         
         public static Pawn Leader( this Faction faction )
         {
-            
             // player faction, see if we have a major (Psychology), if not - oldest is leader.
             if ( faction == Faction.OfPlayer )
             {
