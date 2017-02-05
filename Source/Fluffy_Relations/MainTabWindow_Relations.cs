@@ -326,15 +326,19 @@ namespace Fluffy_Relations
             Widgets.BeginScrollView( informationRect, ref _factionInformationScrollPosition, informationViewRect );
             var curY = 0f;
 
-            var factionTypeRect = new Rect( 0f, curY, informationRect.width, Settings.RowHeight );
-            curY += Settings.RowHeight;
             var factionLeaderRect = new Rect( 0f, curY, informationRect.width, Settings.RowHeight );
             curY += Settings.RowHeight;
+            var factionTypeRect = new Rect( 0f, curY, informationRect.width, Settings.RowHeight );
+            curY += Settings.RowHeight;
+            var factionDescriptionRect = new Rect( 0f, curY, informationRect.width,
+                                                   Text.CalcHeight( $"<i>{faction.def.description}</i>", informationRect.width ) );
             var kidnappedRect = new Rect( 0f, curY, informationRect.width, Settings.RowHeight );
             curY += Settings.RowHeight;
 
+
             Widgets.Label( factionTypeRect, faction.def.LabelCap + " (" + faction.def.techLevel + ")" );
             Widgets.Label( factionLeaderRect, faction.def.leaderTitle + ": " + ( faction.Leader()?.Name.ToStringFull ?? "Noone".Translate() ));
+            Widgets.Label( factionDescriptionRect, $"<i>{faction.def.description}</i>" );
             if ( faction.kidnapped?.KidnappedPawnsListForReading.Count > 0 )
             {
                 Widgets.Label( kidnappedRect, "Fluffy_Relations.KidnappedColonists".Translate() + ":" );
