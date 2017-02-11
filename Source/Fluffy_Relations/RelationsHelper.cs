@@ -17,8 +17,6 @@ namespace Fluffy_Relations
 
         public static float OPINION_THRESHOLD_NEG = -50f;
         public static float OPINION_THRESHOLD_POS = 50f;
-        public static DefMap<PawnRelationDef, Color> RELATIONS_COLOR;
-        public static DefMap<PawnRelationDef, bool> RELATIONS_VISIBLE;
         public static Dictionary<Pawn, List<string>> ThoughtsAbout = new Dictionary<Pawn, List<string>>();
         private static Dictionary<Pair<Pawn, Pawn>, float> _opinions;
 
@@ -26,22 +24,17 @@ namespace Fluffy_Relations
 
         #region Constructors
 
-        static RelationsHelper()
+        public static bool VisibleInTab( this PawnRelationDef relation )
         {
-            RELATIONS_VISIBLE = new DefMap<PawnRelationDef, bool>();
-            RELATIONS_COLOR = new DefMap<PawnRelationDef, Color>();
-
-            // give visible relations a sensible default
-            List<PawnRelationDef> relations = DefDatabase<PawnRelationDef>.AllDefsListForReading;
-            for ( var i = 0; i < relations.Count; i++ )
-            {
-                PawnRelationDef relation = relations[i];
-                RELATIONS_VISIBLE[relation] = relation.opinionOffset > OPINION_THRESHOLD_POS / 2f ||
-                                              relation.opinionOffset < OPINION_THRESHOLD_NEG / 2f;
-                RELATIONS_COLOR[relation] = Color.HSVToRGB( i / (float)relations.Count, 1f, 1f );
-            }
+            return relation.opinionOffset > OPINION_THRESHOLD_POS / 2f ||
+                   relation.opinionOffset < OPINION_THRESHOLD_NEG / 2f;
         }
 
+        public static Color ColorInTab( this PawnRelationDef relation )
+        {
+            return Color.HSVToRGB( relation.index / (float) DefDatabase<PawnRelationDef>.DefCount, 1f, 1f );
+        }
+        
         #endregion Constructors
 
         #region Properties
@@ -76,7 +69,7 @@ namespace Fluffy_Relations
         public static List<Pawn> GetDirectlyRelatedPawns( this Pawn pawn )
         {
             return
-                pawn.relations.DirectRelations.Where( rel => RELATIONS_VISIBLE[rel.def] )
+                pawn.relations.DirectRelations.Where( rel => rel.def.VisibleInTab() )
                     .Select( rel => rel.otherPawn )
                     .ToList();
         }
@@ -97,7 +90,7 @@ namespace Fluffy_Relations
             PawnRelationDef def = null;
             foreach ( PawnRelationDef current in me.GetRelations( other ) )
             {
-                if ( RELATIONS_VISIBLE[current] && ( def == null || current.importance > def.importance ) )
+                if ( current.VisibleInTab() && ( def == null || current.importance > def.importance ) )
                 {
                     def = current;
                 }
@@ -127,8 +120,8 @@ namespace Fluffy_Relations
 
         public static Color GetRelationColor( PawnRelationDef def, float opinion )
         {
-            if ( def != null && RELATIONS_VISIBLE[def] )
-                return RELATIONS_COLOR[def];
+            if ( def != null && def.VisibleInTab() )
+                return def.ColorInTab();
 
             return GetRelationColor( opinion );
         }
@@ -176,6 +169,7 @@ namespace Fluffy_Relations
         }
 
         private static HediffDef _majorHediffDef;
+        
         private static bool _psychologyLoaded = true;
 
         public static Pawn GetMayor()

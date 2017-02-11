@@ -534,6 +534,9 @@ namespace Fluffy_Relations
         private void DrawSourceButton()
         {
             // draw source selection rect
+
+            // set game font to small (otherwise fully zoomed in the fonts go tiny.)
+            Text.Font = GameFont.Small;
             if ( CurrentPage == Page.Colonists )
             {
                 if ( Widgets.ButtonText( sourceButtonRect, "Fluffy_Relations.Colonists".Translate() ) )
