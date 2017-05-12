@@ -2,6 +2,7 @@
 // MainTabWindow_Relations.cs
 // 2016-12-26
 
+using System.Collections.Generic;
 using System.Linq;
 using Fluffy_Relations.ForceDirectedGraph;
 using RimWorld;
@@ -22,12 +23,13 @@ namespace Fluffy_Relations
         Factions
     }
 
-    public class MainTabWindow_Relations : MainTabWindow_PawnList
+    public class MainTabWindow_Relations : MainTabWindow
     {
         private static Page _currentPage = Page.Colonists;
         private static GraphMode _mode = GraphMode.ForceDirected;
         private static Faction _selectedFaction;
         private static Pawn _selectedPawn;
+        private static List<Pawn> pawns;
         private float _factionDetailHeight = 999f;
         private Vector2 _factionDetailScrollPosition = Vector2.zero;
         private float _factionInformationHeight = 999f;
@@ -140,6 +142,7 @@ namespace Fluffy_Relations
         public override void PreOpen()
         {
             base.PreOpen();
+            BuildPawnList();
             _selectedFaction = Faction.OfPlayer;
         }
 
@@ -460,10 +463,10 @@ namespace Fluffy_Relations
         /// Builds pawn list + slot positions
         /// called from base.PreOpen();
         /// </summary>
-        protected override void BuildPawnList()
+        protected void BuildPawnList()
         {
             // rebuild pawn list
-            base.BuildPawnList();
+            pawns = Find.VisibleMap.mapPawns.FreeColonists.ToList();
             RelationsHelper.ResetOpinionCache();
 
             // recalculate positions
@@ -473,12 +476,7 @@ namespace Fluffy_Relations
             // create list of social thoughts to pawns
             RelationsHelper.CreateThoughtList( pawns );
         }
-
-        protected override void DrawPawnRow( Rect r, Pawn p )
-        {
-            // required implementation
-        }
-
+        
         // split the screen into two areas
         private void CreateAreas()
         {
