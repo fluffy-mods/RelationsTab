@@ -147,7 +147,7 @@ namespace Fluffy_Relations
             _selectedPawn = pawns.FirstOrDefault();
         }
 
-        public void CreateCircle()
+        public void CreateCircle( bool freeze )
         {
             int count = graph.nodes.Count;
             Vector2 center = graph.Center;
@@ -158,7 +158,7 @@ namespace Fluffy_Relations
             {
                 Node node = graph.nodes[i];
                 node.position = Helpers.PointOnCircle( i, count, center, radius );
-                node.Frozen = true;
+                node.Frozen = freeze;
             }
         }
 
@@ -169,7 +169,7 @@ namespace Fluffy_Relations
             if ( CurrentPage == Page.Colonists )
             {
                 // initialize list of nodes
-                graph.nodes = pawns.Select( pawn => new PawnNode( pawn, networkRect.RandomPoint(), graph ) as Node ).ToList();
+                graph.nodes = pawns.Select( pawn => new PawnNode( pawn, networkRect.RandomPoint(), graph ) as Node ).ToList(); // note that we force the nodes in a circle regardless of this starting position
                 foreach ( Node node in graph.nodes )
                 {
                     // attach event handlers to node
@@ -231,8 +231,7 @@ namespace Fluffy_Relations
             }
 
             // force circle positions if mode is circle
-            if ( _mode == GraphMode.Circle )
-                CreateCircle();
+            CreateCircle( _mode == GraphMode.Circle );
         }
 
         public override void DoWindowContents( Rect canvas )
