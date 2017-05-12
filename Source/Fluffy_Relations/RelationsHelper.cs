@@ -26,6 +26,8 @@ namespace Fluffy_Relations
 
         public static bool VisibleInTab( this PawnRelationDef relation )
         {
+            if ( relation == null )
+                return false;
             return relation.opinionOffset > OPINION_THRESHOLD_POS / 2f ||
                    relation.opinionOffset < OPINION_THRESHOLD_NEG / 2f;
         }
