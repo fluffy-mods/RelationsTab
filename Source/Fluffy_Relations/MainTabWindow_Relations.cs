@@ -144,6 +144,7 @@ namespace Fluffy_Relations
             base.PreOpen();
             BuildPawnList();
             _selectedFaction = Faction.OfPlayer;
+            _selectedPawn = pawns.FirstOrDefault();
         }
 
         public void CreateCircle()
@@ -481,12 +482,14 @@ namespace Fluffy_Relations
         private void CreateAreas()
         {
             // social network on the right, always square, try to fill the whole height - but limited by width.
-            float networkSize = Mathf.Min( UI.screenHeight - 35f, UI.screenWidth - Settings.MinDetailWidth ) - 2 * Margin;
-            networkRect = new Rect( 0f, 0f, networkSize, networkSize );
-            networkRect.x = UI.screenWidth - networkSize - 2 * Margin;
+            float desiredNetworkSize = Mathf.Min( UI.screenHeight - 35f, UI.screenWidth - Settings.MinDetailWidth ) - 2 * Margin;
 
-            // detail view on the left, full height (minus what is needed for faction/colonists selection) - fill available width
-            detailRect = new Rect( 0f, 36f, UI.screenWidth - networkSize - Margin * 2, UI.screenHeight - 35f - Margin * 2 );
+            // detail view on the left, full height (minus what is needed for faction/colonists selection) - fill available width, but don't exceed 1/3 of the screen
+            var detailRectWidth = Mathf.Min( UI.screenWidth - desiredNetworkSize - Margin * 2, Screen.width / 3f );
+            detailRect = new Rect( 0f, 36f, detailRectWidth, UI.screenHeight - 35f - Margin * 2 );
+
+            // finalize the network rect
+            networkRect = new Rect( detailRectWidth + Margin * 2, 0f, desiredNetworkSize, desiredNetworkSize);
 
             // selection button rect
             sourceButtonRect = new Rect( 0f, 0f, 200f, 30f );
