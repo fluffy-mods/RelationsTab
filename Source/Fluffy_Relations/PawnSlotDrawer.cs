@@ -20,34 +20,45 @@ namespace Fluffy_Relations
                 graphics.ResolveAllGraphics();
 
             // draw base body
-            GUI.color = graphics.nakedGraphic.Color;
-            GUI.DrawTexture( slot, graphics.nakedGraphic.MatFront.mainTexture );
+            if ( graphics.nakedGraphic != null )
+            {
+                GUI.color = graphics.nakedGraphic.Color;
+                GUI.DrawTexture( slot, graphics.nakedGraphic.MatFront.mainTexture );
+            }
 
             // draw apparel
             bool drawHair = true;
-            foreach ( var apparel in graphics.apparelGraphics )
+            if ( graphics.apparelGraphics != null )
             {
-                if ( apparel.sourceApparel.def.apparel.LastLayer == ApparelLayer.Overhead )
+                foreach ( var apparel in graphics.apparelGraphics )
                 {
-                    drawHair = false;
-                    continue;
+                    if ( apparel.sourceApparel.def.apparel.LastLayer == ApparelLayer.Overhead )
+                    {
+                        drawHair = false;
+                        continue;
+                    }
+
+                    GUI.color = apparel.graphic.Color;
+                    GUI.DrawTexture( slot, apparel.graphic.MatFront.mainTexture );
                 }
-                GUI.color = apparel.graphic.Color;
-                GUI.DrawTexture( slot, apparel.graphic.MatFront.mainTexture );
             }
 
-            // draw head, offset further drawing up
+            // draw head-related stuff, offset further drawing up
             slot.y -= Settings.SlotSize * 1/4f;
-            GUI.color = graphics.headGraphic.Color;
-            GUI.DrawTexture( slot, graphics.headGraphic.MatFront.mainTexture );
+
+            if ( graphics.headGraphic != null )
+            {
+                GUI.color = graphics.headGraphic.Color;
+                GUI.DrawTexture( slot, graphics.headGraphic.MatFront.mainTexture );
+            }
 
             // draw hair OR hat
-            if ( drawHair )
+            if ( drawHair && graphics.hairGraphic != null )
             {
                 GUI.color = graphics.hairGraphic.Color;
                 GUI.DrawTexture( slot, graphics.hairGraphic.MatFront.mainTexture );
             }
-            else
+            if ( !drawHair && graphics.apparelGraphics != null )
             {
                 foreach ( var apparel in graphics.apparelGraphics )
                 {
@@ -59,8 +70,6 @@ namespace Fluffy_Relations
                     }
                 }
             }
-
-            // draw dead, frozen overlay
 
             // reset color, and then we're done here
             GUI.color = Color.white;
