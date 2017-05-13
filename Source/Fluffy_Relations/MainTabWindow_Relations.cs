@@ -25,6 +25,9 @@ namespace Fluffy_Relations
 
     public class MainTabWindow_Relations : MainTabWindow
     {
+        #region Fields
+
+        public Graph graph;
         private static Page _currentPage = Page.Colonists;
         private static GraphMode _mode = GraphMode.ForceDirected;
         private static Faction _selectedFaction;
@@ -36,15 +39,21 @@ namespace Fluffy_Relations
         private Vector2 _factionInformationScrollPosition = Vector2.zero;
         private Pawn _lastSelectedPawn;
         private Rect detailRect;
-
-        public Graph graph;
         private Rect networkRect;
         private Rect sourceButtonRect;
+
+        #endregion Fields
+
+        #region Constructors
 
         public MainTabWindow_Relations()
         {
             forcePause = true;
         }
+
+        #endregion Constructors
+
+        #region Properties
 
         public Page CurrentPage
         {
@@ -58,7 +67,7 @@ namespace Fluffy_Relations
 
         public override Vector2 InitialSize
         {
-            get { return new Vector2( UI.screenWidth, UI.screenHeight - 35f ); }
+            get { return new Vector2(UI.screenWidth, UI.screenHeight - 35f); }
         }
 
         public Faction SelectedFaction
@@ -67,31 +76,31 @@ namespace Fluffy_Relations
             set
             {
                 // unfreeze old selection
-                if ( _mode == GraphMode.ForceDirected && _selectedFaction != null &&
-                     graph.Node( _selectedFaction.Leader() ) != null )
-                    graph.Node( _selectedFaction.Leader() ).Frozen = false;
+                if (_mode == GraphMode.ForceDirected && _selectedFaction != null &&
+                     graph.Node(_selectedFaction.Leader()) != null)
+                    graph.Node(_selectedFaction.Leader()).Frozen = false;
 
                 // change selection and freeze it if not null
                 _selectedFaction = value;
-                if ( value != null )
-                    graph.Node( _selectedFaction.Leader() ).Frozen = true;
+                if (value != null)
+                    graph.Node(_selectedFaction.Leader()).Frozen = true;
 
                 // clear current list of connections
                 graph.ClearEdges();
 
                 // if something selected, draw only connections for that faction
-                if ( value != null && graph.Node( value.Leader() ) != null )
+                if (value != null && graph.Node(value.Leader()) != null)
                 {
-                    Node node = graph.Node( value.Leader() );
-                    foreach ( Node other in graph.nodes )
-                        graph.AddEdge<FactionEdge>( node, other );
+                    Node node = graph.Node(value.Leader());
+                    foreach (Node other in graph.nodes)
+                        graph.AddEdge<FactionEdge>(node, other);
                 }
                 else
                 // if nothing selected, build full list of connections
                 {
-                    foreach ( Node node in graph.nodes )
-                        foreach ( Node other in graph.nodes )
-                            graph.AddEdge<FactionEdge>( node, other );
+                    foreach (Node node in graph.nodes)
+                        foreach (Node other in graph.nodes)
+                            graph.AddEdge<FactionEdge>(node, other);
                 }
 
                 // restart dynamic process
@@ -105,32 +114,32 @@ namespace Fluffy_Relations
             set
             {
                 // unfreeze old selection
-                if ( _mode == GraphMode.ForceDirected && _selectedPawn != null && graph.Node( _selectedPawn ) != null )
-                    graph.Node( _selectedPawn ).Frozen = false;
+                if (_mode == GraphMode.ForceDirected && _selectedPawn != null && graph.Node(_selectedPawn) != null)
+                    graph.Node(_selectedPawn).Frozen = false;
 
                 // change selection and freeze it if not null
                 _selectedPawn = value;
-                if ( value != null )
-                    graph.Node( _selectedPawn ).Frozen = true;
+                if (value != null)
+                    graph.Node(_selectedPawn).Frozen = true;
 
                 // clear current list of connections
                 graph.ClearEdges();
 
                 // add opinions for currently selected
-                if ( value != null )
+                if (value != null)
                 {
-                    foreach ( Pawn other in _selectedPawn.GetRelatedPawns( pawns, true ) )
+                    foreach (Pawn other in _selectedPawn.GetRelatedPawns(pawns, true))
                     {
-                        graph.AddEdge<PawnEdge>( graph.Node( _selectedPawn ), graph.Node( other ) );
+                        graph.AddEdge<PawnEdge>(graph.Node(_selectedPawn), graph.Node(other));
                     }
                 }
 
                 // add relations for all pawns
-                foreach ( Node node in graph.nodes )
+                foreach (Node node in graph.nodes)
                 {
-                    foreach ( Pawn other in node.pawn.GetRelatedPawns( pawns, false ) )
+                    foreach (Pawn other in node.pawn.GetRelatedPawns(pawns, false))
                     {
-                        graph.AddEdge<PawnEdge>( node, graph.Node( other ) );
+                        graph.AddEdge<PawnEdge>(node, graph.Node(other));
                     }
                 }
 
@@ -139,25 +148,21 @@ namespace Fluffy_Relations
             }
         }
 
-        public override void PreOpen()
-        {
-            base.PreOpen();
-            BuildPawnList();
-            _selectedFaction = Faction.OfPlayer;
-            _selectedPawn = pawns.FirstOrDefault();
-        }
+        #endregion Properties
 
-        public void CreateCircle( bool freeze )
+        #region Methods
+
+        public void CreateCircle(bool freeze)
         {
             int count = graph.nodes.Count;
             Vector2 center = graph.Center;
-            float radius = Mathf.Min( graph.size.x / 2f, graph.size.y / 2f ) - Settings.SlotSize / 2f;
+            float radius = Mathf.Min(graph.size.x / 2f, graph.size.y / 2f) - Constants.SlotSize / 2f;
 
             // set nodes on the circle, and freeze them
-            for ( var i = 0; i < count; i++ )
+            for (var i = 0; i < count; i++)
             {
                 Node node = graph.nodes[i];
-                node.position = Helpers.PointOnCircle( i, count, center, radius );
+                node.position = Helpers.PointOnCircle(i, count, center, radius);
                 node.Frozen = freeze;
             }
         }
@@ -165,27 +170,27 @@ namespace Fluffy_Relations
         public void CreateGraph()
         {
             // calculate positions
-            graph = new Graph( networkRect.size );
-            if ( CurrentPage == Page.Colonists )
+            graph = new Graph(networkRect.size);
+            if (CurrentPage == Page.Colonists)
             {
                 // initialize list of nodes
-                graph.nodes = pawns.Select( pawn => new PawnNode( pawn, networkRect.RandomPoint(), graph ) as Node ).ToList(); // note that we force the nodes in a circle regardless of this starting position
-                foreach ( Node node in graph.nodes )
+                graph.nodes = pawns.Select(pawn => new PawnNode(pawn, networkRect.RandomPoint(), graph) as Node).ToList(); // note that we force the nodes in a circle regardless of this starting position
+                foreach (Node node in graph.nodes)
                 {
                     // attach event handlers to node
-                    node.OnHover += () => TooltipHandler.TipRegion( node.slot, node.pawn.GetTooltip( SelectedPawn ) );
+                    node.OnHover += () => TooltipHandler.TipRegion(node.slot, node.pawn.GetTooltip(SelectedPawn));
                     node.OnLeftClick += () => SelectedPawn = node.pawn;
                     node.PreDrawExtras += delegate
                                               {
-                                                  if ( node.pawn == SelectedPawn || Mouse.IsOver( node.slot ) )
-                                                      GUI.DrawTexture( node.slot, Resources.Halo );
+                                                  if (node.pawn == SelectedPawn || Mouse.IsOver(node.slot))
+                                                      GUI.DrawTexture(node.slot, Resources.Halo);
                                               };
                     node.PostDrawExtras += delegate
                                                {
-                                                   if ( node.Frozen && _mode == GraphMode.ForceDirected )
+                                                   if (node.Frozen && _mode == GraphMode.ForceDirected)
                                                        GUI.DrawTexture(
-                                                                       new Rect( node.slot.xMax - 16f, node.slot.yMin,
-                                                                                 16f, 16f ), Resources.Pin );
+                                                                       new Rect(node.slot.xMax - 16f, node.slot.yMin,
+                                                                                 16f, 16f), Resources.Pin);
                                                };
 
                     // add edges - assign SelectedPawn to null to trigger Set method and reset selected
@@ -195,34 +200,34 @@ namespace Fluffy_Relations
             else
             {
                 graph.nodes = Find.FactionManager
-                                  .AllFactionsInViewOrder.Select( f => new FactionNode( f, networkRect.RandomPoint(), graph ) as Node )
-                                  .Where( n => n.pawn != null )
+                                  .AllFactionsInViewOrder.Select(f => new FactionNode(f, networkRect.RandomPoint(), graph) as Node)
+                                  .Where(n => n.pawn != null)
                                   .ToList();
 
-                foreach ( Node node in graph.nodes )
+                foreach (Node node in graph.nodes)
                 {
                     // attach event handlers to node
                     var fnode = node as FactionNode;
-                    if ( fnode == null )
+                    if (fnode == null)
                     {
-                        Log.Warning( "Non-faction node in node list for faction tab. " );
+                        Log.Warning("Non-faction node in node list for faction tab. ");
                         continue;
                     }
 
                     fnode.OnHover +=
-                        () => TooltipHandler.TipRegion( fnode.slot, fnode.faction.GetTooltip( SelectedFaction ) );
+                        () => TooltipHandler.TipRegion(fnode.slot, fnode.faction.GetTooltip(SelectedFaction));
                     fnode.OnLeftClick += () => SelectedFaction = fnode.faction;
                     fnode.PreDrawExtras += delegate
                                                {
-                                                   if ( fnode.faction == SelectedFaction || Mouse.IsOver( fnode.slot ) )
-                                                       GUI.DrawTexture( fnode.slot, Resources.Halo );
+                                                   if (fnode.faction == SelectedFaction || Mouse.IsOver(fnode.slot))
+                                                       GUI.DrawTexture(fnode.slot, Resources.Halo);
                                                };
                     node.PostDrawExtras += delegate
                                                {
-                                                   if ( node.Frozen && _mode == GraphMode.ForceDirected )
+                                                   if (node.Frozen && _mode == GraphMode.ForceDirected)
                                                        GUI.DrawTexture(
-                                                                       new Rect( node.slot.xMax - 16f, node.slot.yMin,
-                                                                                 16f, 16f ), Resources.Pin );
+                                                                       new Rect(node.slot.xMax - 16f, node.slot.yMin,
+                                                                                 16f, 16f), Resources.Pin);
                                                };
 
                     // attach edges - assign selected to itself to trigger Set method.
@@ -231,126 +236,125 @@ namespace Fluffy_Relations
             }
 
             // force circle positions if mode is circle
-            CreateCircle( _mode == GraphMode.Circle );
+            CreateCircle(_mode == GraphMode.Circle);
         }
 
-        public override void DoWindowContents( Rect canvas )
+        public override void DoWindowContents(Rect canvas)
         {
             // update the graph
             graph.Update();
 
             // set size and draw background
-            base.DoWindowContents( canvas );
+            base.DoWindowContents(canvas);
 
             // source selection button
             DrawSourceButton();
 
             // graph reset and mode selection icons
-            DrawGraphOptions( canvas );
+            DrawGraphOptions(canvas);
 
             // draw relevant page
-            if ( CurrentPage == Page.Colonists )
+            if (CurrentPage == Page.Colonists)
                 DrawPawnRelations();
-            if ( CurrentPage == Page.Factions )
+            if (CurrentPage == Page.Factions)
                 DrawFactionRelations();
 
             // see if we can catch clicks in the main rect to reset selections
-            if ( Widgets.ButtonInvisible( networkRect ) )
+            if (Widgets.ButtonInvisible(networkRect))
             {
-                if ( CurrentPage == Page.Colonists )
+                if (CurrentPage == Page.Colonists)
                     SelectedPawn = null;
-                if ( CurrentPage == Page.Factions )
+                if (CurrentPage == Page.Factions)
                     SelectedFaction = null;
             }
         }
 
-        public void DrawDetails( Rect canvas, Pawn pawn )
+        public void DrawDetails(Rect canvas, Pawn pawn)
         {
-            GUI.BeginGroup( canvas );
+            GUI.BeginGroup(canvas);
 
             var numSections = 3;
             var titleHeight = 30f;
             var margin = 6f;
-            float availableHeight = canvas.height - ( titleHeight + margin ) * numSections;
+            float availableHeight = canvas.height - (titleHeight + margin) * numSections;
 
             // set up rects
-            var pawnInfoTitleRect = new Rect( 0f, 0f, canvas.width, titleHeight );
-            var pawnInfoRect = new Rect( 0f, titleHeight + margin, canvas.width, availableHeight / 5f );
-            var relationsTitleRect = new Rect( 0f, pawnInfoRect.yMax, canvas.width, titleHeight );
-            var relationsRect = new Rect( 0f, relationsTitleRect.yMax + margin, canvas.width, availableHeight / 5f * 2f );
-            var interactionsTitleRect = new Rect( 0f, relationsRect.yMax + margin, canvas.width, titleHeight );
-            var interactionsRect = new Rect( 0f, interactionsTitleRect.yMax + margin, canvas.width,
-                                             availableHeight / 5f * 2f );
+            var pawnInfoTitleRect = new Rect(0f, 0f, canvas.width, titleHeight);
+            var pawnInfoRect = new Rect(0f, titleHeight + margin, canvas.width, availableHeight / 5f);
+            var relationsTitleRect = new Rect(0f, pawnInfoRect.yMax, canvas.width, titleHeight);
+            var relationsRect = new Rect(0f, relationsTitleRect.yMax + margin, canvas.width, availableHeight / 5f * 2f);
+            var interactionsTitleRect = new Rect(0f, relationsRect.yMax + margin, canvas.width, titleHeight);
+            var interactionsRect = new Rect(0f, interactionsTitleRect.yMax + margin, canvas.width,
+                                             availableHeight / 5f * 2f);
 
             // titles
             Text.Font = GameFont.Medium;
-            Widgets.Label( pawnInfoTitleRect, pawn.Name.ToStringFull );
-            Widgets.Label( relationsTitleRect,
-                           "Fluffy_Relations.Possesive".Translate( pawn.LabelShort ) +
-                           "Fluffy_Relations.Relations".Translate() );
-            Widgets.Label( interactionsTitleRect,
-                           "Fluffy_Relations.Possesive".Translate( pawn.LabelShort ) +
-                           "Fluffy_Relations.Interactions".Translate() );
+            Widgets.Label(pawnInfoTitleRect, pawn.Name.ToStringFull);
+            Widgets.Label(relationsTitleRect,
+                           "Fluffy_Relations.Possesive".Translate(pawn.LabelShort) +
+                           "Fluffy_Relations.Relations".Translate());
+            Widgets.Label(interactionsTitleRect,
+                           "Fluffy_Relations.Possesive".Translate(pawn.LabelShort) +
+                           "Fluffy_Relations.Interactions".Translate());
             Text.Font = GameFont.Small;
 
             // draw overview of traits and status effects relevant to social relations
-            RelationsHelper.DrawSocialStatusEffectsSummary( pawnInfoRect, pawn );
+            RelationsHelper.DrawSocialStatusEffectsSummary(pawnInfoRect, pawn);
 
             // draw relations overview.
-            SocialCardUtility.DrawRelationsAndOpinions( relationsRect, pawn );
+            SocialCardUtility.DrawRelationsAndOpinions(relationsRect, pawn);
 
             // need to call log drawer through reflection. Geez.
-            Resources.DrawSocialLogMI.Invoke( null, new object[] {interactionsRect, pawn} );
+            Resources.DrawSocialLogMI.Invoke(null, new object[] { interactionsRect, pawn });
 
             GUI.EndGroup();
         }
 
-        public void DrawDetails( Rect canvas, Faction faction )
+        public void DrawDetails(Rect canvas, Faction faction)
         {
             // set up rects
-            var informationTitleRect = new Rect( 0f, 0f, canvas.width, 30f );
-            var informationRect = new Rect( 0f, 36f, canvas.width, canvas.height / 2f - 36f );
-            var informationViewRect = new Rect( 0f, 0f, informationRect.width - 16f, _factionInformationHeight );
-            var relationsTitleRect = new Rect( 0f, canvas.height / 2f, canvas.width, 30f );
-            var relationsRect = new Rect( 0f, canvas.height / 2f + 36f, canvas.width, canvas.height / 2f - 36f );
-            var relationsViewRect = new Rect( 0f, 0f, relationsRect.width - 16f, _factionDetailHeight );
+            var informationTitleRect = new Rect(0f, 0f, canvas.width, 30f);
+            var informationRect = new Rect(0f, 36f, canvas.width, canvas.height / 2f - 36f);
+            var informationViewRect = new Rect(0f, 0f, informationRect.width - 16f, _factionInformationHeight);
+            var relationsTitleRect = new Rect(0f, canvas.height / 2f, canvas.width, 30f);
+            var relationsRect = new Rect(0f, canvas.height / 2f + 36f, canvas.width, canvas.height / 2f - 36f);
+            var relationsViewRect = new Rect(0f, 0f, relationsRect.width - 16f, _factionDetailHeight);
 
-            GUI.BeginGroup( canvas );
+            GUI.BeginGroup(canvas);
 
             // draw titles
             Text.Font = GameFont.Medium;
-            Widgets.Label( informationTitleRect, faction.GetFactionLabel() );
-            Widgets.Label( relationsTitleRect,
-                           "Fluffy_Relations.Possesive".Translate( faction.GetFactionLabel() ) +
-                           "Fluffy_Relations.Relations".Translate() );
+            Widgets.Label(informationTitleRect, faction.GetFactionLabel());
+            Widgets.Label(relationsTitleRect,
+                           "Fluffy_Relations.Possesive".Translate(faction.GetFactionLabel()) +
+                           "Fluffy_Relations.Relations".Translate());
             Text.Font = GameFont.Small;
 
             // information
-            Widgets.BeginScrollView( informationRect, ref _factionInformationScrollPosition, informationViewRect );
+            Widgets.BeginScrollView(informationRect, ref _factionInformationScrollPosition, informationViewRect);
             var curY = 0f;
 
-            var factionLeaderRect = new Rect( 0f, curY, informationRect.width, Settings.RowHeight );
-            curY += Settings.RowHeight;
-            var factionTypeRect = new Rect( 0f, curY, informationRect.width, Settings.RowHeight );
-            curY += Settings.RowHeight;
-            var factionDescriptionRect = new Rect( 0f, curY, informationRect.width,
-                                                   Text.CalcHeight( $"<i>{faction.def.description}</i>", informationRect.width ) );
-            var kidnappedRect = new Rect( 0f, curY, informationRect.width, Settings.RowHeight );
-            curY += Settings.RowHeight;
+            var factionLeaderRect = new Rect(0f, curY, informationRect.width, Constants.RowHeight);
+            curY += Constants.RowHeight;
+            var factionTypeRect = new Rect(0f, curY, informationRect.width, Constants.RowHeight);
+            curY += Constants.RowHeight;
+            var factionDescriptionRect = new Rect(0f, curY, informationRect.width,
+                                                   Text.CalcHeight($"<i>{faction.def.description}</i>", informationRect.width));
+            var kidnappedRect = new Rect(0f, curY, informationRect.width, Constants.RowHeight);
+            curY += Constants.RowHeight;
 
-
-            Widgets.Label( factionTypeRect, faction.def.LabelCap + " (" + faction.def.techLevel + ")" );
-            Widgets.Label( factionLeaderRect, faction.def.leaderTitle + ": " + ( faction.Leader()?.Name.ToStringFull ?? "Noone".Translate() ));
-            Widgets.Label( factionDescriptionRect, $"<i>{faction.def.description}</i>" );
-            if ( faction.kidnapped?.KidnappedPawnsListForReading.Count > 0 )
+            Widgets.Label(factionTypeRect, faction.def.LabelCap + " (" + faction.def.techLevel + ")");
+            Widgets.Label(factionLeaderRect, faction.def.leaderTitle + ": " + (faction.Leader()?.Name.ToStringFull ?? "Noone".Translate()));
+            Widgets.Label(factionDescriptionRect, $"<i>{faction.def.description}</i>");
+            if (faction.kidnapped?.KidnappedPawnsListForReading.Count > 0)
             {
-                Widgets.Label( kidnappedRect, "Fluffy_Relations.KidnappedColonists".Translate() + ":" );
-                foreach ( Pawn kidnappee in faction.kidnapped.KidnappedPawnsListForReading )
+                Widgets.Label(kidnappedRect, "Fluffy_Relations.KidnappedColonists".Translate() + ":");
+                foreach (Pawn kidnappee in faction.kidnapped.KidnappedPawnsListForReading)
                 {
-                    var kidnappeeRow = new Rect( 0f, curY, informationRect.width, Settings.RowHeight );
-                    curY += Settings.RowHeight;
+                    var kidnappeeRow = new Rect(0f, curY, informationRect.width, Constants.RowHeight);
+                    curY += Constants.RowHeight;
 
-                    Widgets.Label( kidnappeeRow, "\t" + kidnappee.Name );
+                    Widgets.Label(kidnappeeRow, "\t" + kidnappee.Name);
                 }
             }
 
@@ -358,31 +362,31 @@ namespace Fluffy_Relations
             Widgets.EndScrollView();
 
             // relations
-            Widgets.BeginScrollView( relationsRect, ref _factionDetailScrollPosition, relationsViewRect );
+            Widgets.BeginScrollView(relationsRect, ref _factionDetailScrollPosition, relationsViewRect);
             curY = 0f;
 
-            foreach ( Faction otherFaction in Find.FactionManager
+            foreach (Faction otherFaction in Find.FactionManager
                                                   .AllFactionsVisible
-                                                  .Where( other => other != faction &&
-                                                                   other.RelationWith( faction, true ) != null )
-                                                  .OrderByDescending( of => of.GoodwillWith( faction ) ) )
+                                                  .Where(other => other != faction &&
+                                                                  other.RelationWith(faction, true) != null)
+                                                  .OrderByDescending(of => of.GoodwillWith(faction)))
             {
                 {
-                    var row = new Rect( 0f, curY, canvas.width, Settings.RowHeight );
-                    curY += Settings.RowHeight;
+                    var row = new Rect(0f, curY, canvas.width, Constants.RowHeight);
+                    curY += Constants.RowHeight;
 
-                    int opinion = Mathf.RoundToInt( otherFaction.GoodwillWith( faction ) );
-                    GUI.color = RelationsHelper.GetRelationColor( opinion );
+                    int opinion = Mathf.RoundToInt(otherFaction.GoodwillWith(faction));
+                    GUI.color = RelationsHelper.GetRelationColor(opinion);
                     var label = "";
-                    if ( faction.HostileTo( otherFaction ) )
-                        label = "HostileTo".Translate( otherFaction.GetCallLabel() );
+                    if (faction.HostileTo(otherFaction))
+                        label = "HostileTo".Translate(otherFaction.GetCallLabel());
                     else
                         label = otherFaction.GetFactionLabel();
                     label += ": " + opinion;
 
-                    Widgets.DrawHighlightIfMouseover( row );
-                    Widgets.Label( row, label );
-                    if ( Widgets.ButtonInvisible( row ) )
+                    Widgets.DrawHighlightIfMouseover(row);
+                    Widgets.Label(row, label);
+                    if (Widgets.ButtonInvisible(row))
                         SelectedFaction = otherFaction;
                 }
             }
@@ -399,21 +403,21 @@ namespace Fluffy_Relations
         public void DrawFactionRelations()
         {
             // draw that graph
-            graph.Draw( networkRect );
+            graph.Draw(networkRect);
 
             // draw legend or details in the detail rect
-            if ( SelectedFaction != null )
-                DrawDetails( detailRect, SelectedFaction );
+            if (SelectedFaction != null)
+                DrawDetails(detailRect, SelectedFaction);
             else
-                DrawLegend( detailRect );
+                DrawLegend(detailRect);
         }
 
-        public void DrawLegend( Rect canvas )
+        public void DrawLegend(Rect canvas)
         {
             // TODO: Draw legend.
             Text.Anchor = TextAnchor.MiddleCenter;
             GUI.color = Color.grey;
-            Widgets.Label( canvas, "Fluffy_Relations.NothingSelected".Translate() );
+            Widgets.Label(canvas, "Fluffy_Relations.NothingSelected".Translate());
             GUI.color = Color.white;
             Text.Anchor = TextAnchor.UpperLeft;
         }
@@ -424,13 +428,13 @@ namespace Fluffy_Relations
             UpdateSelectedPawn();
 
             // draw pawn graph
-            graph.Draw( networkRect );
+            graph.Draw(networkRect);
 
             // draw legend or details in the detail rect
-            if ( SelectedPawn != null )
-                DrawDetails( detailRect, SelectedPawn );
+            if (SelectedPawn != null)
+                DrawDetails(detailRect, SelectedPawn);
             else
-                DrawLegend( detailRect );
+                DrawLegend(detailRect);
         }
 
         public override void PostClose()
@@ -440,6 +444,14 @@ namespace Fluffy_Relations
             _lastSelectedPawn = null;
         }
 
+        public override void PreOpen()
+        {
+            base.PreOpen();
+            BuildPawnList();
+            _selectedFaction = Faction.OfPlayer;
+            _selectedPawn = pawns.FirstOrDefault();
+        }
+
         public void UpdateSelectedPawn()
         {
             // Clicking on the opinion overviews selects a pawn in the game's selector).
@@ -447,11 +459,11 @@ namespace Fluffy_Relations
             Pawn selectorPawn = Find.Selector.SingleSelectedThing as Pawn;
 
             // do we currently have a pawn selected, and is it different from our previous selection?
-            if ( selectorPawn != null && selectorPawn != _lastSelectedPawn )
+            if (selectorPawn != null && selectorPawn != _lastSelectedPawn)
             {
-                // is the pawn we currently have selected a valid target for selection in the relations tab? 
+                // is the pawn we currently have selected a valid target for selection in the relations tab?
                 // (i.e. is it a colonist?)
-                if ( RelationsHelper.Colonists.Contains( selectorPawn ))
+                if (RelationsHelper.Colonists.Contains(selectorPawn))
                     SelectedPawn = selectorPawn;
 
                 // stop this check happening again until we select something else.
@@ -474,56 +486,56 @@ namespace Fluffy_Relations
             CreateGraph();
 
             // create list of social thoughts to pawns
-            RelationsHelper.CreateThoughtList( pawns );
+            RelationsHelper.CreateThoughtList(pawns);
         }
-        
+
         // split the screen into two areas
         private void CreateAreas()
         {
             // social network on the right, always square, try to fill the whole height - but limited by width.
-            float desiredNetworkSize = Mathf.Min( UI.screenHeight - 35f, UI.screenWidth - Settings.MinDetailWidth ) - 2 * Margin;
+            float desiredNetworkSize = Mathf.Min(UI.screenHeight - 35f, UI.screenWidth - Constants.MinDetailWidth) - 2 * Margin;
 
             // detail view on the left, full height (minus what is needed for faction/colonists selection) - fill available width, but don't exceed 1/3 of the screen
-            var detailRectWidth = Mathf.Min( UI.screenWidth - desiredNetworkSize - Margin * 2, Screen.width / 3f );
-            detailRect = new Rect( 0f, 36f, detailRectWidth, UI.screenHeight - 35f - Margin * 2 );
+            var detailRectWidth = Mathf.Min(UI.screenWidth - desiredNetworkSize - Margin * 2, Screen.width / 3f);
+            detailRect = new Rect(0f, 36f, detailRectWidth, UI.screenHeight - 35f - Margin * 2);
 
             // finalize the network rect
-            networkRect = new Rect( detailRectWidth + Margin * 2, 0f, desiredNetworkSize, desiredNetworkSize);
+            networkRect = new Rect(detailRectWidth + Margin * 2, 0f, desiredNetworkSize, desiredNetworkSize);
 
             // selection button rect
-            sourceButtonRect = new Rect( 0f, 0f, 200f, 30f );
+            sourceButtonRect = new Rect(0f, 0f, 200f, 30f);
         }
 
-        private void DrawGraphOptions( Rect canvas )
+        private void DrawGraphOptions(Rect canvas)
         {
             // draw graph mode selector and reset button
-            var modeSelectRect = new Rect( canvas.xMax - Settings.IconSize - Settings.Inset,
-                                           canvas.yMin + Settings.Inset, Settings.IconSize, Settings.IconSize );
-            var graphResetRect = new Rect( canvas.xMax - ( Settings.IconSize + Settings.Inset ) * 2,
-                                           canvas.yMin + Settings.Inset, Settings.IconSize, Settings.IconSize );
+            var modeSelectRect = new Rect(canvas.xMax - Constants.IconSize - Constants.Inset,
+                                           canvas.yMin + Constants.Inset, Constants.IconSize, Constants.IconSize);
+            var graphResetRect = new Rect(canvas.xMax - (Constants.IconSize + Constants.Inset) * 2,
+                                           canvas.yMin + Constants.Inset, Constants.IconSize, Constants.IconSize);
 
-            if ( _mode == GraphMode.ForceDirected )
+            if (_mode == GraphMode.ForceDirected)
             {
                 // tooltips
-                TooltipHandler.TipRegion( modeSelectRect, "Fluffy_Relations.ModeCircleTip".Translate() );
-                TooltipHandler.TipRegion( graphResetRect, "Fluffy_Relations.GraphResetTip".Translate() );
+                TooltipHandler.TipRegion(modeSelectRect, "Fluffy_Relations.ModeCircleTip".Translate());
+                TooltipHandler.TipRegion(graphResetRect, "Fluffy_Relations.GraphResetTip".Translate());
 
-                if ( Widgets.ButtonImage( modeSelectRect, Resources.DotsCircle ) )
+                if (Widgets.ButtonImage(modeSelectRect, Resources.DotsCircle))
                 {
                     _mode = GraphMode.Circle;
                     BuildPawnList(); // restarts graph
                 }
 
-                if ( Widgets.ButtonImage( graphResetRect, TexUI.RotLeftTex ) )
+                if (Widgets.ButtonImage(graphResetRect, TexUI.RotLeftTex))
                 {
                     BuildPawnList();
                 }
             }
-            if ( _mode == GraphMode.Circle )
+            if (_mode == GraphMode.Circle)
             {
-                TooltipHandler.TipRegion( modeSelectRect, "Fluffy_Relations.ModeGraphTip".Translate() );
+                TooltipHandler.TipRegion(modeSelectRect, "Fluffy_Relations.ModeGraphTip".Translate());
 
-                if ( Widgets.ButtonImage( modeSelectRect, Resources.DotsDynamic ) )
+                if (Widgets.ButtonImage(modeSelectRect, Resources.DotsDynamic))
                 {
                     _mode = GraphMode.ForceDirected;
                     BuildPawnList(); // restarts graph
@@ -537,21 +549,23 @@ namespace Fluffy_Relations
 
             // set game font to small (otherwise fully zoomed in the fonts go tiny.)
             Text.Font = GameFont.Small;
-            if ( CurrentPage == Page.Colonists )
+            if (CurrentPage == Page.Colonists)
             {
-                if ( Widgets.ButtonText( sourceButtonRect, "Fluffy_Relations.Colonists".Translate() ) )
+                if (Widgets.ButtonText(sourceButtonRect, "Fluffy_Relations.Colonists".Translate()))
                 {
                     CurrentPage = Page.Factions;
                 }
             }
-            if ( CurrentPage == Page.Factions )
+            if (CurrentPage == Page.Factions)
             {
-                if ( Widgets.ButtonText( sourceButtonRect, "Fluffy_Relations.Factions".Translate() ) )
+                if (Widgets.ButtonText(sourceButtonRect, "Fluffy_Relations.Factions".Translate()))
                 {
                     CurrentPage = Page.Colonists;
                 }
             }
-            TooltipHandler.TipRegion( sourceButtonRect, "Fluffy_Relations.SourceButtonTip".Translate() );
+            TooltipHandler.TipRegion(sourceButtonRect, "Fluffy_Relations.SourceButtonTip".Translate());
         }
+
+        #endregion Methods
     }
 }
