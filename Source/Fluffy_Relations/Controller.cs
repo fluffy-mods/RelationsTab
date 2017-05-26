@@ -41,7 +41,7 @@ namespace Fluffy_Relations
 
         public override string SettingsCategory()
         {
-            return "Fluffy.Relations".Translate();
+            return "Fluffy_Relations".Translate();
         }
 
         #endregion Methods
