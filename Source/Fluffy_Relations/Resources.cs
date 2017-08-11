@@ -2,6 +2,7 @@
 // Resources.cs
 // 2016-12-26
 
+using System.Collections.Generic;
 using System.Reflection;
 using RimWorld;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Fluffy_Relations
         #region Fields
 
         public static Rect baseSlot = new Rect(0f, 0f, Constants.SlotSize, Constants.SlotSize);
+        public static Dictionary<FactionDef, Texture2D> baseTextures = new Dictionary<FactionDef, Texture2D>();
 
         // colors
         public static Color
@@ -43,5 +45,12 @@ namespace Fluffy_Relations
             Halo = ContentFinder<Texture2D>.Get("UI/Misc/Halo");
 
         #endregion Fields
+
+        public static void CacheBaseTextures()
+        {
+            foreach (var faction in DefDatabase<FactionDef>.AllDefsListForReading)
+                if (!faction.homeIconPath.NullOrEmpty())
+                    baseTextures.Add(faction, ContentFinder<Texture2D>.Get(faction.homeIconPath));
+        }
     }
 }

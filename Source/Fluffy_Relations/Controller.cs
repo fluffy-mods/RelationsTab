@@ -2,7 +2,6 @@
 // Controller.cs
 // 2017-05-13
 
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -12,19 +11,23 @@ namespace Fluffy_Relations
     {
         #region Constructors
 
-        public Controller(ModContentPack content) : base(content)
+        public Controller( ModContentPack content ) : base( content )
         {
+            // init settings
             GetSettings<Settings>();
+
+            // init textures
+            LongEventHandler.QueueLongEvent( Resources.CacheBaseTextures, "FluffyRelations.Initialize", false, null );
         }
 
         #endregion Constructors
-        
-        #region Methods
 
-        public override void DoSettingsWindowContents(Rect inRect)
+        #region Methods
+        
+        public override void DoSettingsWindowContents( Rect inRect )
         {
-            base.DoSettingsWindowContents(inRect);
-            Settings.DoSettingsWindowContents(inRect);
+            base.DoSettingsWindowContents( inRect );
+            Settings.DoSettingsWindowContents( inRect );
         }
 
         public override string SettingsCategory()

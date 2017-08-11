@@ -110,8 +110,14 @@ namespace Fluffy_Relations
                 Widgets.Label(labelRect, label);
                 Text.Font = GameFont.Small;
             }
+        }
 
-            // draw health bar
+        public static void DrawTextureColoured( Rect rect, Texture2D texture, Color colour )
+        {
+            var oldColor = GUI.color;
+            GUI.color = colour;
+            GUI.DrawTexture( rect, texture );
+            GUI.color = oldColor;
         }
 
         public static Rect LabelRect(string name, Rect slot)

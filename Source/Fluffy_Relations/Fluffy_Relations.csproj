@@ -52,7 +52,6 @@
     <Compile Include="ForceDirectedGraph\FactionEdge.cs" />
     <Compile Include="ForceDirectedGraph\FactionNode.cs" />
     <Compile Include="ForceDirectedGraph\Graph.cs" />
-    <Compile Include="ModConfigMenu.cs" />
     <Compile Include="ForceDirectedGraph\Helpers.cs" />
     <Compile Include="ForceDirectedGraph\Node.cs" />
     <Compile Include="ForceDirectedGraph\PawnEdge.cs" />
