@@ -10,27 +10,15 @@ namespace Fluffy_Relations
 {
     public class Controller : Mod
     {
-        #region Fields
-
-        private static Controller _instance;
-
-        #endregion Fields
-
         #region Constructors
 
         public Controller(ModContentPack content) : base(content)
         {
-            _instance = this;
+            GetSettings<Settings>();
         }
 
         #endregion Constructors
-
-        #region Properties
-
-        public static Controller Get => _instance;
-
-        #endregion Properties
-
+        
         #region Methods
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -45,22 +33,5 @@ namespace Fluffy_Relations
         }
 
         #endregion Methods
-
-        #region Classes
-
-        [StaticConstructorOnStartup]
-        public class Init
-        {
-            #region Constructors
-
-            static Init()
-            {
-                Get.GetSettings<Settings>();
-            }
-
-            #endregion Constructors
-        }
-
-        #endregion Classes
     }
 }
