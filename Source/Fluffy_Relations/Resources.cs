@@ -27,10 +27,6 @@ namespace Fluffy_Relations
             ColorExLover = Color.cyan,
             ColorFamily = Color.white;
 
-        public static MethodInfo DrawSocialLogMI = typeof(SocialCardUtility).GetMethod("DrawInteractionsLog",
-                                                                                          BindingFlags.Static |
-                                                                                          BindingFlags.NonPublic);
-
         public static Texture2D
             SlightlyDarkBG = SolidColorMaterials.NewSolidColorTexture(new Color(0f, 0f, 0f, .4f)),
             Solid = SolidColorMaterials.NewSolidColorTexture(Color.white),

@@ -301,8 +301,7 @@ namespace Fluffy_Relations
             SocialCardUtility.DrawRelationsAndOpinions( relationsRect, pawn );
 
             // need to call log drawer through reflection. Geez.
-            Resources.DrawSocialLogMI.Invoke( null, new object[] {interactionsRect, pawn} );
-
+            InteractionCardUtility.DrawInteractionsLog( interactionsRect, pawn, Find.PlayLog.AllEntries, 24 );
             GUI.EndGroup();
         }
 

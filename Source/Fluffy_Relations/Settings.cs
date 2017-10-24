@@ -137,7 +137,7 @@ namespace Fluffy_Relations
                                  "Fluffy_Relations.InvalidFloat".Translate(
                                                                            NumberFormatInfo.CurrentInfo
                                                                                            .NumberDecimalSeparator),
-                                 MessageSound.RejectInput);
+                                 MessageTypeDefOf.RejectInput);
                 values[label] = value;
             }
 
@@ -160,7 +160,7 @@ namespace Fluffy_Relations
 
             if (GUI.GetNameOfFocusedControl() != label && !int.TryParse(values[label].ToString(), out value))
             {
-                Messages.Message("Fluffy_Relations.InvalidInteger".Translate(), MessageSound.RejectInput);
+                Messages.Message("Fluffy_Relations.InvalidInteger".Translate(), MessageTypeDefOf.RejectInput);
                 values[label] = value;
             }
 
