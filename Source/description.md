@@ -1,1 +1,11 @@
 Replaces the faction tab with a relations tab. The relations tab shows, in a very graphical way, relations between your colonists and with other factions. 
+
+# Notes
+In games with many faction mods or a lot of colonists, the dynamic displays may 'explode'. There's three things you can do to mitigate this problem;
+ - Use the static circle view. In the top right of the tab there is a button to switch between circle and dynamic views (may be hidden underneath the tutorial window).
+ - Reset the dynamic view until it stops exploding. The button to reset the dynamic algorithm is in the top right of the window, next to that for cicle view (and may also be hidden by the tutorial).
+ - Tweak the parameters for the dynamic algorithm. In the mod options (Menu -> Options -> Mod Options -> Relations Tab) you can tweak the parameters for the algorithm. There is a short description of what each parameter does in the options as well.
+
+# Known issues
+ - In games with a lot of factions/colonists, the algorithm may 'explode'. See the 'Notes' section on how to fix this.
+ - Some mods (noticably, the Zabrak faction) change pawn rendering in such a way that it breaks the relations tab. I'm looking for the root cause of this.
