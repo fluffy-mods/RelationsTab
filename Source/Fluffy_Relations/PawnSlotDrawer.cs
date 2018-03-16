@@ -14,61 +14,7 @@ namespace Fluffy_Relations
 
         public static void DrawPawnInSlot(Pawn pawn, Rect slot)
         {
-            // get the pawn's graphics set, and make sure it's resolved.
-            PawnGraphicSet graphics = pawn.Drawer.renderer.graphics;
-            if (!graphics.AllResolved)
-                graphics.ResolveAllGraphics();
-
-            // draw base body
-            if (graphics.nakedGraphic != null)
-            {
-                GUI.color = graphics.nakedGraphic.Color;
-                GUI.DrawTexture(slot, graphics.nakedGraphic.MatFront.mainTexture);
-            }
-
-            // draw apparel
-            var drawHair = true;
-            if (graphics.apparelGraphics != null)
-                foreach (ApparelGraphicRecord apparel in graphics.apparelGraphics)
-                {
-                    if (apparel.sourceApparel.def.apparel.LastLayer == ApparelLayer.Overhead)
-                    {
-                        drawHair = false;
-                        continue;
-                    }
-
-                    GUI.color = apparel.graphic.Color;
-                    GUI.DrawTexture(slot, apparel.graphic.MatFront.mainTexture);
-                }
-
-            // draw head-related stuff, offset further drawing up
-            slot.y -= Constants.SlotSize * 1 / 4f;
-
-            if (graphics.headGraphic != null)
-            {
-                GUI.color = graphics.headGraphic.Color;
-                GUI.DrawTexture(slot, graphics.headGraphic.MatFront.mainTexture);
-            }
-
-            // draw hair OR hat
-            if (drawHair && graphics.hairGraphic != null)
-            {
-                GUI.color = graphics.hairGraphic.Color;
-                GUI.DrawTexture(slot, graphics.hairGraphic.MatFront.mainTexture);
-            }
-            if (!drawHair && graphics.apparelGraphics != null)
-                foreach (ApparelGraphicRecord apparel in graphics.apparelGraphics)
-                {
-                    Rect slot2 = slot;
-                    if (apparel.sourceApparel.def.apparel.LastLayer == ApparelLayer.Overhead)
-                    {
-                        GUI.color = apparel.graphic.Color;
-                        GUI.DrawTexture(slot2, apparel.graphic.MatFront.mainTexture);
-                    }
-                }
-
-            // reset color, and then we're done here
-            GUI.color = Color.white;
+            GUI.DrawTexture( slot, PortraitsCache.Get( pawn, Constants.SlotSizeVector, default(Vector3), 1.22f ) );
         }
 
         public static void DrawSlot(this Pawn pawn, Rect slot, bool drawBG = true, bool drawLabel = true,
