@@ -191,6 +191,16 @@ namespace Fluffy_Relations
                                 new Rect( node.slot.xMax - 16f, node.slot.yMin,
                                     16f, 16f ), Resources.Pin );
                     };
+                    if ( node.secondary && ( !node.pawn.Faction?.IsPlayer ?? false ) )
+                    {
+                        node.PostDrawExtras += delegate
+                        {
+                            var factionIconRect = new Rect(node.slot.xMin, node.slot.yMin, 16f, 16f);
+                            PawnSlotDrawer.DrawTextureColoured(factionIconRect, node.pawn.Faction.def.ExpandingIconTexture, node.pawn.Faction.Color);
+                        };
+
+                        node.OnHover += () => TooltipHandler.TipRegion( node.slot, node.pawn.Faction.GetTooltip( Faction.OfPlayer ) );
+                    }
 
                     // add edges - assign SelectedPawn to null to trigger Set method and reset selected
                     SelectedPawn = null;
@@ -347,7 +357,7 @@ namespace Fluffy_Relations
             var curY = 0f;
 
             var factionLeaderRect = new Rect( 0f, curY, informationRect.width, RowHeight );
-            if ( faction == Faction.OfPlayer )
+            if ( faction == Faction.OfPlayer && RelationsHelper.GetMayor() == null )
             {
                 factionLeaderRect.xMin += RowHeight + Inset;
                 Rect factionLeaderSelectRect = new Rect( 0f, curY + ( RowHeight - SmallIconSize ) / 2f, SmallIconSize, SmallIconSize);
@@ -607,13 +617,20 @@ namespace Fluffy_Relations
             if ( _currentPage == Page.Colonists )
             {
                 var firstDegreeRect = GetIconRect( canvas, iconIndex++ );
-                TooltipHandler.TipRegion( firstDegreeRect, "Fluffy_Relations.FirstDegreeTip".Translate() );
+                var baseColor = drawFirstDegreePawns ? Color.white : Color.grey;
+                var tipString = drawFirstDegreePawns
+                    ? "Fluffy_Relations.FirstDegreeTip_Off".Translate()
+                    : "Fluffy_Relations.FirstDegreeTip_On".Translate();
 
-                if ( Widgets.ButtonImage( firstDegreeRect, Resources.Cog ) )
+                TooltipHandler.TipRegion( firstDegreeRect, tipString );
+                if ( Widgets.ButtonImage( firstDegreeRect, Resources.FamilyTree, baseColor ) )
                 {
                     drawFirstDegreePawns = !drawFirstDegreePawns;
                     BuildPawnList();
                 }
+
+                // because Widgets.BI() doesn't reset it...
+                GUI.color = Color.white;
             }
         }
 

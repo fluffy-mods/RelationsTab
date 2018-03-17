@@ -37,6 +37,7 @@ namespace Fluffy_Relations
             Cog = ContentFinder<Texture2D>.Get("UI/Icons/Cog"),
             Pin = ContentFinder<Texture2D>.Get("UI/Icons/Pin"),
             Edit = ContentFinder<Texture2D>.Get( "UI/Icons/edit" ),
+            FamilyTree = ContentFinder<Texture2D>.Get( "UI/Icons/FamilyTree" ),
 
             // misc
             Halo = ContentFinder<Texture2D>.Get("UI/Misc/Halo");

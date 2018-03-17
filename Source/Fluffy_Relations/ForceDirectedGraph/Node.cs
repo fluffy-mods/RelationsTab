@@ -18,7 +18,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
         public Vector2 velocity = Vector2.zero;
         public Graph graph;
         private bool wasDragged = false;
-        private bool secondary = false;
+        public bool secondary = false;
 
         public Action OnLeftClick;
         public Action OnRightClick;
@@ -126,8 +126,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
             if ( Mouse.IsOver( slot ) )
             {
                 // hover
-                if ( OnHover != null )
-                    OnHover();
+                OnHover?.Invoke();
 
                 // on left mouse drag, move node, freeze location, and restart graph so other nodes react
                 if ( Event.current.button == 0 && Event.current.type == EventType.MouseDrag )

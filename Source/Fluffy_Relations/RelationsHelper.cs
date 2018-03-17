@@ -153,9 +153,10 @@ namespace Fluffy_Relations
 
         public static string GetTooltip(this Pawn pawn, Pawn other)
         {
-            var tip = "";
+            var tip = pawn.Name.ToStringFull;
             if (other != null && other != pawn)
             {
+                tip += "\n\n";
                 tip += "Fluffy_Relations.Possesive".Translate(pawn.NameStringShort);
                 tip += pawn.relations.OpinionExplanation(other);
                 tip += "\n\n";
