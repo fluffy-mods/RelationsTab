@@ -14,6 +14,7 @@ namespace Fluffy_Relations
         #region Fields
 
         public const float IconSize = 24f;
+        public const float SmallIconSize = 16f;
         public const float Inset = 16f;
         public const float LabelHeight = 16f;
         public const float Margin = 6f;

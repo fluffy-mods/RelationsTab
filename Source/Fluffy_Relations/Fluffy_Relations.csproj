@@ -56,6 +56,7 @@
     <Compile Include="ForceDirectedGraph\Node.cs" />
     <Compile Include="ForceDirectedGraph\PawnEdge.cs" />
     <Compile Include="ForceDirectedGraph\PawnNode.cs" />
+    <Compile Include="GameComponent_Leader.cs" />
     <Compile Include="MainTabWindow_Relations.cs" />
     <Compile Include="PawnSlotDrawer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

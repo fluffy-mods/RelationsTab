@@ -8,6 +8,7 @@ using Fluffy_Relations.ForceDirectedGraph;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using static Fluffy_Relations.Constants;
 
 namespace Fluffy_Relations
 {
@@ -145,7 +146,7 @@ namespace Fluffy_Relations
         {
             var count = graph.nodes.Count;
             var center = graph.Center;
-            var radius = Mathf.Min( graph.size.x / 2f, graph.size.y / 2f ) - Constants.SlotSize / 2f;
+            var radius = Mathf.Min( graph.size.x / 2f, graph.size.y / 2f ) - SlotSize / 2f;
 
             // set nodes on the circle, and freeze them
             for ( var i = 0; i < count; i++ )
@@ -337,26 +338,75 @@ namespace Fluffy_Relations
             Widgets.BeginScrollView( informationRect, ref _factionInformationScrollPosition, informationViewRect );
             var curY = 0f;
 
-            var factionLeaderRect = new Rect( 0f, curY, informationRect.width, Constants.RowHeight );
-            curY += Constants.RowHeight;
-            var factionTypeRect = new Rect( 0f, curY, informationRect.width, Constants.RowHeight );
-            curY += Constants.RowHeight;
+            var factionLeaderRect = new Rect( 0f, curY, informationRect.width, RowHeight );
+            if ( faction == Faction.OfPlayer )
+            {
+                factionLeaderRect.xMin += RowHeight + Inset;
+                Rect factionLeaderSelectRect = new Rect( 0f, curY + ( RowHeight - SmallIconSize ) / 2f, SmallIconSize, SmallIconSize);
+                TooltipHandler.TipRegion( factionLeaderSelectRect, "Fluffy_Relations.SelectLeaderTip".Translate() );
+                if ( Widgets.ButtonImage( factionLeaderSelectRect, Resources.Edit ) )
+                {
+                    // do leader selection dropdown.
+                    var options = new List<FloatMenuOption>();
+
+                    // pawns on maps
+                    foreach ( var pawn in Find.Maps.SelectMany( m => m.mapPawns.FreeColonists ) )
+                    {
+                        // todo; draw portrait extra.
+                        options.Add(new FloatMenuOption(pawn.NameStringShort, () =>
+                        {
+                            GameComponent_Leader.Leader = pawn;
+                            BuildPawnList(); // restarts graph
+                        },
+                        extraPartWidth: 24f,
+                        extraPartOnGUI: ( rect ) =>
+                        {
+                            GUI.DrawTexture( rect, PortraitsCache.Get( pawn, new Vector2( rect.width, rect.height ) ) );
+                            return Widgets.ButtonInvisible( rect );
+                        }));
+                    }
+
+                    // pawns in caravans
+                    foreach ( var pawn in Find.WorldObjects.Caravans
+                        .Where( c => c.IsPlayerControlled )
+                        .SelectMany( c => c.PawnsListForReading )
+                        .Where( p => p.IsColonist) )
+                    {
+                        // todo; draw portrait extra.
+                        options.Add(new FloatMenuOption(pawn.NameStringShort, () =>
+                            {
+                                GameComponent_Leader.Leader = pawn;
+                                BuildPawnList(); // restarts graph
+                            },
+                            extraPartWidth: 24f,
+                            extraPartOnGUI: (rect) =>
+                            {
+                                GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height)));
+                                return Widgets.ButtonInvisible(rect);
+                            }));
+                    }
+
+                    Find.WindowStack.Add( new FloatMenu( options ) );
+                }
+            }
+            curY += RowHeight;
+            var factionTypeRect = new Rect( 0f, curY, informationRect.width, RowHeight );
+            curY += RowHeight;
             var factionDescriptionRect = new Rect( 0f, curY, informationRect.width,
                 Text.CalcHeight( $"<i>{faction.def.description}</i>", informationRect.width ) );
-            var kidnappedRect = new Rect( 0f, curY, informationRect.width, Constants.RowHeight );
-            curY += Constants.RowHeight;
+            var kidnappedRect = new Rect( 0f, curY, informationRect.width, RowHeight );
+            curY += RowHeight;
 
             Widgets.Label( factionTypeRect, faction.def.LabelCap + " (" + faction.def.techLevel + ")" );
-            Widgets.Label( factionLeaderRect,
-                faction.def.leaderTitle + ": " + ( faction.Leader()?.Name.ToStringFull ?? "Noone".Translate() ) );
+            Widgets.Label( factionLeaderRect, faction.def.leaderTitle + ": " + ( faction.Leader()?.Name.ToStringFull ?? "Noone".Translate() ) );
             Widgets.Label( factionDescriptionRect, $"<i>{faction.def.description}</i>" );
             if ( faction.kidnapped?.KidnappedPawnsListForReading.Count > 0 )
             {
                 Widgets.Label( kidnappedRect, "Fluffy_Relations.KidnappedColonists".Translate() + ":" );
                 foreach ( var kidnappee in faction.kidnapped.KidnappedPawnsListForReading )
                 {
-                    var kidnappeeRow = new Rect( 0f, curY, informationRect.width, Constants.RowHeight );
-                    curY += Constants.RowHeight;
+                    var kidnappeeRow = new Rect( 0f, curY, informationRect.width, RowHeight );
+                    curY += RowHeight;
 
                     Widgets.Label( kidnappeeRow, "\t" + kidnappee.Name );
                 }
@@ -375,8 +425,8 @@ namespace Fluffy_Relations
                                  other.RelationWith( faction, true ) != null )
                 .OrderByDescending( of => of.GoodwillWith( faction ) ) )
             {
-                var row = new Rect( 0f, curY, canvas.width, Constants.RowHeight );
-                curY += Constants.RowHeight;
+                var row = new Rect( 0f, curY, canvas.width, RowHeight );
+                curY += RowHeight;
 
                 var opinion = Mathf.RoundToInt( otherFaction.GoodwillWith( faction ) );
                 GUI.color = RelationsHelper.GetRelationColor( opinion );
@@ -495,7 +545,7 @@ namespace Fluffy_Relations
         private void CreateAreas()
         {
             // social network on the right, always square, try to fill the whole height - but limited by width.
-            var desiredNetworkSize = Mathf.Min( UI.screenHeight - 35f, UI.screenWidth - Constants.MinDetailWidth ) -
+            var desiredNetworkSize = Mathf.Min( UI.screenHeight - 35f, UI.screenWidth - MinDetailWidth ) -
                                      2 * Margin;
 
             // detail view on the left, full height (minus what is needed for faction/colonists selection) - fill available width, but don't exceed 1/3 of the screen
@@ -509,34 +559,37 @@ namespace Fluffy_Relations
             sourceButtonRect = new Rect( 0f, 0f, 200f, 30f );
         }
 
+        private Rect GetIconRect( Rect canvas, int index )
+        {
+            return new Rect(canvas.xMax - ( IconSize + Inset ) * index, canvas.yMin + Inset, IconSize, IconSize );
+        }
+
         private void DrawGraphOptions( Rect canvas )
         {
-            // draw graph mode selector and reset button
-            var modeSelectRect = new Rect( canvas.xMax - Constants.IconSize - Constants.Inset,
-                canvas.yMin + Constants.Inset, Constants.IconSize, Constants.IconSize );
-            var graphResetRect = new Rect( canvas.xMax - ( Constants.IconSize + Constants.Inset ) * 2,
-                canvas.yMin + Constants.Inset, Constants.IconSize, Constants.IconSize );
-
+            var iconIndex = 1;
             if ( _mode == GraphMode.ForceDirected )
             {
                 // tooltips
-                TooltipHandler.TipRegion( modeSelectRect, "Fluffy_Relations.ModeCircleTip".Translate() );
-                TooltipHandler.TipRegion( graphResetRect, "Fluffy_Relations.GraphResetTip".Translate() );
+                var modeIconRect = GetIconRect(canvas, iconIndex++);
+                var resetIconRect = GetIconRect(canvas, iconIndex++);
+                TooltipHandler.TipRegion( modeIconRect, "Fluffy_Relations.ModeCircleTip".Translate() );
+                TooltipHandler.TipRegion( resetIconRect, "Fluffy_Relations.GraphResetTip".Translate() );
 
-                if ( Widgets.ButtonImage( modeSelectRect, Resources.DotsCircle ) )
+                if ( Widgets.ButtonImage(modeIconRect, Resources.DotsCircle ) )
                 {
                     _mode = GraphMode.Circle;
                     BuildPawnList(); // restarts graph
                 }
 
-                if ( Widgets.ButtonImage( graphResetRect, TexUI.RotLeftTex ) )
+                if ( Widgets.ButtonImage(resetIconRect, TexUI.RotLeftTex ) )
                     BuildPawnList();
             }
             if ( _mode == GraphMode.Circle )
             {
-                TooltipHandler.TipRegion( modeSelectRect, "Fluffy_Relations.ModeGraphTip".Translate() );
+                var modeIconRect = GetIconRect(canvas, iconIndex++);
+                TooltipHandler.TipRegion(modeIconRect, "Fluffy_Relations.ModeGraphTip".Translate() );
 
-                if ( Widgets.ButtonImage( modeSelectRect, Resources.DotsDynamic ) )
+                if ( Widgets.ButtonImage(modeIconRect, Resources.DotsDynamic ) )
                 {
                     _mode = GraphMode.ForceDirected;
                     BuildPawnList(); // restarts graph

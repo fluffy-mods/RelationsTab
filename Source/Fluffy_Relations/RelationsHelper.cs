@@ -189,6 +189,8 @@ namespace Fluffy_Relations
             if (faction == Faction.OfPlayer)
             {
                 Pawn leader = GetMayor();
+                if ( leader == null )
+                    leader = GameComponent_Leader.Leader;
                 if (leader == null && Colonists.Any())
                     leader = Colonists.MaxBy(p => p.ageTracker.AgeBiologicalTicks);
 
