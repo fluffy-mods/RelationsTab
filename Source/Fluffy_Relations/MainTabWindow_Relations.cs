@@ -43,6 +43,8 @@ namespace Fluffy_Relations
         private static Faction _selectedFaction;
         private static Pawn _selectedPawn;
         private static List<Pawn> pawns;
+        private static List<Pawn> firstDegreePawns;
+        private static bool drawFirstDegreePawns = false;
         private float _factionDetailHeight = 999f;
         private Vector2 _factionDetailScrollPosition = Vector2.zero;
         private float _factionInformationHeight = 999f;
@@ -164,8 +166,14 @@ namespace Fluffy_Relations
             if ( CurrentPage == Page.Colonists )
             {
                 // initialize list of nodes
-                graph.nodes = pawns.Select( pawn => new PawnNode( pawn, networkRect.RandomPoint(), graph ) as Node )
-                    .ToList(); // note that we force the nodes in a circle regardless of this starting position
+                // note; we force the nodes in a circle regardless of this starting position to try and safeguard against explosion syndrome
+                graph.nodes = pawns.Select( pawn => new PawnNode( pawn, networkRect.RandomPoint(), graph ) as Node ).ToList();
+
+                if ( drawFirstDegreePawns )
+                {
+                    graph.nodes.AddRange( firstDegreePawns.Select( p => new PawnNode( p, networkRect.RandomPoint(), graph, secondary: true ) as Node ) );
+                }
+
                 foreach ( var node in graph.nodes )
                 {
                     // attach event handlers to node
@@ -525,12 +533,13 @@ namespace Fluffy_Relations
 
         /// <summary>
         ///     Builds pawn list + slot positions
-        ///     called from base.PreOpen();
+        ///     called from base.PreOpen(), and various methods that want to reset the graph.
         /// </summary>
         protected void BuildPawnList()
         {
             // rebuild pawn list
             pawns = Find.VisibleMap.mapPawns.FreeColonists.ToList();
+            firstDegreePawns = pawns.SelectMany( p => p.relations.RelatedPawns ).Distinct().Except( pawns ).ToList();
             RelationsHelper.ResetOpinionCache();
 
             // recalculate positions
@@ -538,7 +547,7 @@ namespace Fluffy_Relations
             CreateGraph();
 
             // create list of social thoughts to pawns
-            RelationsHelper.CreateThoughtList( pawns );
+            RelationsHelper.CreateThoughtList( pawns.Concat( firstDegreePawns ).ToList() );
         }
 
         // split the screen into two areas
@@ -593,6 +602,17 @@ namespace Fluffy_Relations
                 {
                     _mode = GraphMode.ForceDirected;
                     BuildPawnList(); // restarts graph
+                }
+            }
+            if ( _currentPage == Page.Colonists )
+            {
+                var firstDegreeRect = GetIconRect( canvas, iconIndex++ );
+                TooltipHandler.TipRegion( firstDegreeRect, "Fluffy_Relations.FirstDegreeTip".Translate() );
+
+                if ( Widgets.ButtonImage( firstDegreeRect, Resources.Cog ) )
+                {
+                    drawFirstDegreePawns = !drawFirstDegreePawns;
+                    BuildPawnList();
                 }
             }
         }

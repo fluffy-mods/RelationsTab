@@ -19,7 +19,7 @@ namespace Fluffy_Relations
 
         public static void DrawSlot(this Pawn pawn, Rect slot, bool drawBG = true, bool drawLabel = true,
                                      bool drawLabelBG = true, bool drawHealthBar = true, bool drawStatusIcons = true,
-                                     string label = "")
+                                     string label = "", bool secondary = false)
         {
             // catch null pawn
             if (pawn == null)
@@ -53,8 +53,13 @@ namespace Fluffy_Relations
                 Text.Font = GameFont.Tiny;
                 if (drawLabelBG)
                     GUI.DrawTexture(labelRect, Resources.SlightlyDarkBG);
+                if ( secondary )
+                {
+                    GUI.color = Color.grey;
+                }
                 Widgets.Label(labelRect, label);
                 Text.Font = GameFont.Small;
+                GUI.color = Color.white;
             }
         }
 

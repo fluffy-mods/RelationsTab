@@ -18,6 +18,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
         public Vector2 velocity = Vector2.zero;
         public Graph graph;
         private bool wasDragged = false;
+        private bool secondary = false;
 
         public Action OnLeftClick;
         public Action OnRightClick;
@@ -29,12 +30,13 @@ namespace Fluffy_Relations.ForceDirectedGraph
 
         #region Constructors
 
-        public Node( Pawn pawn, Vector2 position, Graph graph, bool frozen = false )
+        public Node( Pawn pawn, Vector2 position, Graph graph, bool frozen = false, bool secondary = false )
         {
             this.pawn = pawn;
             this.position = position;
             this.frozen = frozen;
             this.graph = graph;
+            this.secondary = secondary;
 
             OnRightClick += new Action( () => Frozen = false );
 
@@ -105,7 +107,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
             PreDrawExtras?.Invoke();
 
             // draw basic slot
-            pawn.DrawSlot( slot, false, label: pawn?.LabelShort );
+            pawn.DrawSlot( slot, false, label: pawn?.LabelShort, secondary: secondary );
 
             // call extra draw handlers
             PostDrawExtras?.Invoke();

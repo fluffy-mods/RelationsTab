@@ -246,7 +246,9 @@ namespace Fluffy_Relations
                 // get thoughts targeted at the pawn by all other pawns...
                 foreach (Pawn other in pawns.Where(p => p != pawn))
                 {
-                    ThoughtHandler thoughts = other.needs.mood.thoughts;
+                    ThoughtHandler thoughts = other.needs?.mood?.thoughts;
+                    if ( thoughts == null )
+                        continue;
 
                     // get distinct social thoughts
                     var DistinctSocialThoughtGroups = new List<ISocialThought>();
