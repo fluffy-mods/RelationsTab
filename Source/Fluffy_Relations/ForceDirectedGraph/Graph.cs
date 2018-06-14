@@ -136,7 +136,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
             foreach (Edge edge in edges)
             {
 #if DEBUG
-                msg.AppendLine( "\tAttractive force between " + edge.nodeA.pawn.NameStringShort + edge.nodeA.position + " and " + edge.nodeB.pawn.NameStringShort + edge.nodeB.position );
+                msg.AppendLine( "\tAttractive force between " + edge.nodeA.pawn.Name.ToStringShort + edge.nodeA.position + " and " + edge.nodeB.pawn.Name.ToStringShort + edge.nodeB.position );
 #endif
                 edge.nodeA.AttractedTo(edge.nodeB);
                 edge.nodeB.AttractedTo(edge.nodeA);
@@ -146,7 +146,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
             foreach (Node node in nodes)
             {
 #if DEBUG
-                msg.AppendLine( "\tRepulsion for " + node.pawn.NameStringShort + node.position );
+                msg.AppendLine( "\tRepulsion for " + node.pawn.Name.ToStringShort + node.position );
 #endif
                 foreach (Node other in nodes)
                     if (node != other)

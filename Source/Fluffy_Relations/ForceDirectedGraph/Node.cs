@@ -81,7 +81,7 @@ namespace Fluffy_Relations.ForceDirectedGraph
             velocity += force * this.DirectionTo( other );
 
 #if DEBUG
-            Graph.msg.AppendLine( "\t\tRepulsion from " + other.pawn.NameStringShort + other.position + "; Distance: " + this.DistanceTo( other ) + " (" + Mathf.Pow( this.DistanceTo( other ), 2 ) * Graph.idealDistance +  "), Force: " + force + ", Vector: " +  force * this.DirectionTo( other ) );
+            Graph.msg.AppendLine( "\t\tRepulsion from " + other.pawn.Name.ToStringShort + other.position + "; Distance: " + this.DistanceTo( other ) + " (" + Mathf.Pow( this.DistanceTo( other ), 2 ) * Graph.idealDistance +  "), Force: " + force + ", Vector: " +  force * this.DirectionTo( other ) );
 #endif
         }
 

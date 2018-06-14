@@ -371,7 +371,7 @@ namespace Fluffy_Relations
                     foreach ( var pawn in Find.Maps.SelectMany( m => m.mapPawns.FreeColonists ) )
                     {
                         // todo; draw portrait extra.
-                        options.Add(new FloatMenuOption(pawn.NameStringShort, () =>
+                        options.Add(new FloatMenuOption(pawn.Name.ToStringShort, () =>
                         {
                             GameComponent_Leader.Leader = pawn;
                             BuildPawnList(); // restarts graph
@@ -391,7 +391,7 @@ namespace Fluffy_Relations
                         .Where( p => p.IsColonist) )
                     {
                         // todo; draw portrait extra.
-                        options.Add(new FloatMenuOption(pawn.NameStringShort, () =>
+                        options.Add(new FloatMenuOption(pawn.Name.ToStringShort, () =>
                             {
                                 GameComponent_Leader.Leader = pawn;
                                 BuildPawnList(); // restarts graph
@@ -548,7 +548,7 @@ namespace Fluffy_Relations
         protected void BuildPawnList()
         {
             // rebuild pawn list
-            pawns = Find.VisibleMap.mapPawns.FreeColonists.ToList();
+            pawns = Find.CurrentMap.mapPawns.FreeColonists.ToList();
             firstDegreePawns = pawns.SelectMany( p => p.relations.RelatedPawns ).Distinct().Except( pawns ).ToList();
             RelationsHelper.ResetOpinionCache();
 

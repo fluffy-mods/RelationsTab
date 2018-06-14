@@ -33,7 +33,7 @@ namespace Fluffy_Relations
 
             // name rect
             if (label == "")
-                label = pawn.NameStringShort;
+                label = pawn.Name.ToStringShort;
             Rect labelRect = LabelRect(label, slot);
 
             // start drawing

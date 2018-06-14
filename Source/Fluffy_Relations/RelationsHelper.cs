@@ -157,10 +157,10 @@ namespace Fluffy_Relations
             if (other != null && other != pawn)
             {
                 tip += "\n\n";
-                tip += "Fluffy_Relations.Possesive".Translate(pawn.NameStringShort);
+                tip += "Fluffy_Relations.Possesive".Translate(pawn.Name.ToStringShort);
                 tip += pawn.relations.OpinionExplanation(other);
                 tip += "\n\n";
-                tip += "Fluffy_Relations.Possesive".Translate(other.NameStringShort);
+                tip += "Fluffy_Relations.Possesive".Translate(other.Name.ToStringShort);
                 tip += other.relations.OpinionExplanation(pawn);
             }
             tip += "\n\n" + "Fluffy_Relations.NodeInteractionTip".Translate();
