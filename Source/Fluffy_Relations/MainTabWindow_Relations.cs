@@ -2,6 +2,7 @@
 // MainTabWindow_Relations.cs
 // 2016-12-26
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fluffy_Relations.ForceDirectedGraph;
@@ -47,8 +48,6 @@ namespace Fluffy_Relations
         private static bool drawFirstDegreePawns = false;
         private float _factionDetailHeight = 999f;
         private Vector2 _factionDetailScrollPosition = Vector2.zero;
-        private float _factionInformationHeight = 999f;
-        private Vector2 _factionInformationScrollPosition = Vector2.zero;
         private Pawn _lastSelectedPawn;
         private Rect detailRect;
         private Rect networkRect;
@@ -324,71 +323,125 @@ namespace Fluffy_Relations
             GUI.EndGroup();
         }
 
+        public static List<Func<Faction, Vector2, float, float>> ExtraFactionDetailDrawers = new List<Func<Faction, Vector2, float, float>>();
         public void DrawDetails( Rect canvas, Faction faction )
         {
-            // set up rects
-            var informationIconRect = new Rect( 0f, 0f, 30f, 30f );
-            var informationTitleRect = new Rect( 2 * (informationIconRect.width + 6f ), 0f, canvas.width, 30f );
-            var informationRect = new Rect( 0f, 36f, canvas.width, canvas.height / 2f - 36f );
-            var informationViewRect = new Rect( 0f, 0f, informationRect.width - 16f, _factionInformationHeight );
-            var relationsTitleRect = new Rect( 0f, canvas.height / 2f, canvas.width, 30f );
-            var relationsRect = new Rect( 0f, canvas.height / 2f + 36f, canvas.width, canvas.height / 2f - 36f );
-            var relationsViewRect = new Rect( 0f, 0f, relationsRect.width - 16f, _factionDetailHeight );
+            var pos = canvas.min;
+            var viewRect = new Rect(
+                pos.x,
+                pos.y,
+                canvas.width,
+                _factionDetailHeight );
+            if ( viewRect.height > canvas.height )
+                viewRect.width -= 18f;
 
-            GUI.BeginGroup( canvas );
+            Widgets.BeginScrollView( canvas, ref _factionDetailScrollPosition, viewRect );
+
+            // extra drawers
+            foreach ( var drawer in ExtraFactionDetailDrawers )
+                pos.y += drawer( faction, pos, canvas.width ) + StandardMargin;
+
+            // faction details
+            pos.y += DrawFactionInformation( faction, pos, canvas.width ) + StandardMargin;
+
+            // kidnappees, if any
+            pos.y += DrawFactionKidnappees( faction, pos, canvas.width ) + StandardMargin;
+
+            // relations
+            pos.y += DrawFactioRelations( faction, pos, canvas.width ) + StandardMargin;
+
+            Widgets.EndScrollView();
+            _factionDetailHeight = pos.y - canvas.yMin;
+        }
+
+        public float DrawFactionInformation( Faction faction, Vector2 pos, float width )
+        {
+            var startPos = pos;
 
             // draw faction icons
-            PawnSlotDrawer.DrawTextureColoured( informationIconRect, faction.def.ExpandingIconTexture, faction.Color );
+            var informationIconRect = new Rect(pos.x, pos.y, 30f, 30f);
+            PawnSlotDrawer.DrawTextureColoured(informationIconRect, faction.def.ExpandingIconTexture, faction.Color);
             informationIconRect.x += 36f;
+            pos.x += 36f;
             Texture2D baseTexture;
             if ( Resources.baseTextures.TryGetValue( faction.def, out baseTexture ) )
-                PawnSlotDrawer.DrawTextureColoured( informationIconRect, baseTexture, faction.Color );
-
-            // draw titles
-            Text.Font = GameFont.Medium;
-            Widgets.Label( informationTitleRect, faction.GetFactionLabel() );
-            Widgets.Label( relationsTitleRect,
-                "Fluffy_Relations.Possesive".Translate( faction.GetFactionLabel() ) +
-                "Fluffy_Relations.Relations".Translate() );
-            Text.Font = GameFont.Small;
-
-            // information
-            Widgets.BeginScrollView( informationRect, ref _factionInformationScrollPosition, informationViewRect );
-            var curY = 0f;
-
-            var factionLeaderRect = new Rect( 0f, curY, informationRect.width, RowHeight );
-            if ( faction == Faction.OfPlayer && RelationsHelper.GetMayor() == null )
             {
-                factionLeaderRect.xMin += RowHeight + Inset;
-                Rect factionLeaderSelectRect = new Rect( 0f, curY + ( RowHeight - SmallIconSize ) / 2f, SmallIconSize, SmallIconSize);
-                TooltipHandler.TipRegion( factionLeaderSelectRect, "Fluffy_Relations.SelectLeaderTip".Translate() );
-                if ( Widgets.ButtonImage( factionLeaderSelectRect, Resources.Edit ) )
+                PawnSlotDrawer.DrawTextureColoured(informationIconRect, baseTexture, faction.Color);
+                pos.x += 36f;
+            }
+
+            // faction name
+            Utilities.Label( ref pos, width - ( pos.x - startPos.x ), faction.GetFactionLabel(), Color.white, GameFont.Medium );
+            pos.x = startPos.x;
+
+            // faction leader
+            Utilities.Label( ref pos, width, faction.def.leaderTitle.CapitalizeFirst() + ": " 
+                + ( faction.Leader()?.Name.ToStringFull ?? "Noone".Translate() ) );
+            DoLeaderSelectionButton( new Vector2( pos.x + width - SmallIconSize, pos.y - SmallIconSize ), faction );
+
+            // faction type (tech)
+            Utilities.Label( ref pos, width, faction.def.LabelCap + " (" + faction.def.techLevel + ")" );
+
+            // faction description
+            Utilities.Label( ref pos, width, $"<i>{faction.def.description}</i>" );
+
+            return pos.y - startPos.y;
+        }
+
+        public float DrawFactionKidnappees( Faction faction, Vector2 pos, float width )
+        {
+            var startPos = pos;
+
+            if (faction.kidnapped?.KidnappedPawnsListForReading.Count > 0)
+            {
+                Utilities.Label( ref pos, width, "Fluffy_Relations.KidnappedColonists".Translate(), Color.white, GameFont.Medium );
+                foreach (var kidnappee in faction.kidnapped.KidnappedPawnsListForReading)
+                    Utilities.Label( ref pos, width, "\t" + kidnappee.Name );
+            }
+            return pos.y - startPos.y;
+        }
+
+        public float DrawFactioRelations( Faction faction, Vector2 pos, float width )
+        {
+            var startPos = pos;
+            Utilities.Label( ref pos, width,
+                "Fluffy_Relations.Possesive".Translate( faction.GetFactionLabel() ) +
+                "Fluffy_Relations.Relations".Translate(), Color.white, GameFont.Medium );
+            var otherFactions = Find.FactionManager
+                .AllFactionsVisible
+                .Where( other => other != faction &&
+                                 other.RelationWith( faction, true ) != null )
+                .OrderByDescending( other => other.GoodwillWith( faction ) );
+            foreach ( var other in otherFactions )
+            {
+                var opinion = Mathf.RoundToInt( other.GoodwillWith( faction ) );
+                var color = RelationsHelper.GetRelationColor( opinion );
+                var label = "";
+                if ( faction.HostileTo( other ) )
+                    label = "HostileTo".Translate( other.GetCallLabel() ?? other.GetFactionLabel() );
+                else
+                    label = other.GetFactionLabel();
+                label += ": " + opinion;
+                if ( Utilities.ButtonLabel( ref pos, width, label, color ) )
+                    SelectedFaction = other;
+            }
+
+            return pos.y - startPos.y;
+        }
+
+        private void DoLeaderSelectionButton( Vector2 pos, Faction faction )
+        {
+            if (faction == Faction.OfPlayer && RelationsHelper.GetMayor() == null)
+            {
+                Rect factionLeaderSelectRect = new Rect( pos.x, pos.y, SmallIconSize, SmallIconSize );
+                TooltipHandler.TipRegion(factionLeaderSelectRect, "Fluffy_Relations.SelectLeaderTip".Translate());
+                if (Widgets.ButtonImage(factionLeaderSelectRect, Resources.Edit))
                 {
                     // do leader selection dropdown.
                     var options = new List<FloatMenuOption>();
 
                     // pawns on maps
-                    foreach ( var pawn in Find.Maps.SelectMany( m => m.mapPawns.FreeColonists ) )
-                    {
-                        // todo; draw portrait extra.
-                        options.Add(new FloatMenuOption(pawn.Name.ToStringShort, () =>
-                        {
-                            GameComponent_Leader.Leader = pawn;
-                            BuildPawnList(); // restarts graph
-                        },
-                        extraPartWidth: 24f,
-                        extraPartOnGUI: ( rect ) =>
-                        {
-                            GUI.DrawTexture( rect, PortraitsCache.Get( pawn, new Vector2( rect.width, rect.height ) ) );
-                            return Widgets.ButtonInvisible( rect );
-                        }));
-                    }
-
-                    // pawns in caravans
-                    foreach ( var pawn in Find.WorldObjects.Caravans
-                        .Where( c => c.IsPlayerControlled )
-                        .SelectMany( c => c.PawnsListForReading )
-                        .Where( p => p.IsColonist) )
+                    foreach (var pawn in Find.Maps.SelectMany(m => m.mapPawns.FreeColonists))
                     {
                         // todo; draw portrait extra.
                         options.Add(new FloatMenuOption(pawn.Name.ToStringShort, () =>
@@ -404,70 +457,29 @@ namespace Fluffy_Relations
                             }));
                     }
 
-                    Find.WindowStack.Add( new FloatMenu( options ) );
+                    // pawns in caravans
+                    foreach (var pawn in Find.WorldObjects.Caravans
+                        .Where(c => c.IsPlayerControlled)
+                        .SelectMany(c => c.PawnsListForReading)
+                        .Where(p => p.IsColonist))
+                    {
+                        // todo; draw portrait extra.
+                        options.Add(new FloatMenuOption(pawn.Name.ToStringShort, () =>
+                            {
+                                GameComponent_Leader.Leader = pawn;
+                                BuildPawnList(); // restarts graph
+                            },
+                            extraPartWidth: 24f,
+                            extraPartOnGUI: (rect) =>
+                            {
+                                GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height)));
+                                return Widgets.ButtonInvisible(rect);
+                            }));
+                    }
+
+                    Find.WindowStack.Add(new FloatMenu(options));
                 }
             }
-            curY += RowHeight;
-            var factionTypeRect = new Rect( 0f, curY, informationRect.width, RowHeight );
-            curY += RowHeight;
-            var factionDescriptionRect = new Rect( 0f, curY, informationRect.width,
-                Text.CalcHeight( $"<i>{faction.def.description}</i>", informationRect.width ) );
-            var kidnappedRect = new Rect( 0f, curY, informationRect.width, RowHeight );
-            curY += RowHeight;
-
-            Widgets.Label( factionTypeRect, faction.def.LabelCap + " (" + faction.def.techLevel + ")" );
-            Widgets.Label( factionLeaderRect, faction.def.leaderTitle + ": " + ( faction.Leader()?.Name.ToStringFull ?? "Noone".Translate() ) );
-            Widgets.Label( factionDescriptionRect, $"<i>{faction.def.description}</i>" );
-            if ( faction.kidnapped?.KidnappedPawnsListForReading.Count > 0 )
-            {
-                Widgets.Label( kidnappedRect, "Fluffy_Relations.KidnappedColonists".Translate() + ":" );
-                foreach ( var kidnappee in faction.kidnapped.KidnappedPawnsListForReading )
-                {
-                    var kidnappeeRow = new Rect( 0f, curY, informationRect.width, RowHeight );
-                    curY += RowHeight;
-
-                    Widgets.Label( kidnappeeRow, "\t" + kidnappee.Name );
-                }
-            }
-
-            _factionInformationHeight = curY;
-            Widgets.EndScrollView();
-
-            // relations
-            Widgets.BeginScrollView( relationsRect, ref _factionDetailScrollPosition, relationsViewRect );
-            curY = 0f;
-
-            foreach ( var otherFaction in Find.FactionManager
-                .AllFactionsVisible
-                .Where( other => other != faction &&
-                                 other.RelationWith( faction, true ) != null )
-                .OrderByDescending( of => of.GoodwillWith( faction ) ) )
-            {
-                var row = new Rect( 0f, curY, canvas.width, RowHeight );
-                curY += RowHeight;
-
-                var opinion = Mathf.RoundToInt( otherFaction.GoodwillWith( faction ) );
-                GUI.color = RelationsHelper.GetRelationColor( opinion );
-                var label = "";
-                if ( faction.HostileTo( otherFaction ) )
-                    label = "HostileTo".Translate( otherFaction.GetCallLabel() );
-                else
-                    label = otherFaction.GetFactionLabel();
-                label += ": " + opinion;
-
-                Widgets.DrawHighlightIfMouseover( row );
-                Widgets.Label( row, label );
-                if ( Widgets.ButtonInvisible( row ) )
-                    SelectedFaction = otherFaction;
-            }
-
-            // reset color
-            GUI.color = Color.white;
-
-            _factionDetailHeight = curY;
-            Widgets.EndScrollView(); // relations
-
-            GUI.EndGroup(); // canvas
         }
 
         public void DrawFactionRelations()

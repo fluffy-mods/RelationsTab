@@ -64,10 +64,11 @@
     <Compile Include="Resources.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>node ../../postbuild update -x -n "Relations Tab"</PostBuildEvent>
+    <PostBuildEvent>mod update -x</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

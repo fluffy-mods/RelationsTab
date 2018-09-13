@@ -2,7 +2,7 @@
 <Defs>
 
   <MainButtonDef>
-    <defName>Factions</defName>
+    <defName>Factions2</defName>
     <label>relations</label>
     <description>Colonist and faction relations</description>
     <tabWindowClass>Fluffy_Relations.MainTabWindow_Relations</tabWindowClass>
