@@ -33,7 +33,7 @@
   <Fluffy_Relations.InvalidInteger>Número inválido. Sólo se permiten números enteros.</Fluffy_Relations.InvalidInteger>
   <Fluffy_Relations.GraphOptionsInformation>Las siguientes opciones permiten ajustar con precisión el algoritmo que controla el gráfico de fuerza dirigida - la vista dinámica de los colonos y sus relaciones. Cuidado, cambiar de estos valores <b>puede provocar un comportamiento erratico</b>. Especial cuidado con la temperatura inicial, incluso valores ligeramente más altos conducirán rápidamente a gráficos que "explotan". El espacio entre los colonos se puede controlar con eficacia disminuyendo/incrementando la fuerza de repulsión - Ajustar valores entre 500 y 5000 para ver el efecto.</Fluffy_Relations.GraphOptionsInformation>
   <Fluffy_Relations.SocialThoughsOfOthers>Efectos sociales actuales</Fluffy_Relations.SocialThoughsOfOthers>
-  !<Fluffy_Relations.ThoughtOptions>Desventajas sociales registradas</Fluffy_Relations.ThoughtOptions>
+  <Fluffy_Relations.ThoughtOptions>Desventajas sociales registradas</Fluffy_Relations.ThoughtOptions>
 
   <Fluffy_Relations.SelectLeaderTip>Cambiar el líder</Fluffy_Relations.SelectLeaderTip>
   <Fluffy_Relations.FirstDegreeTip_On>Incluir parientes</Fluffy_Relations.FirstDegreeTip_On>
