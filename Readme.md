@@ -16,6 +16,7 @@ In games with many faction mods or a lot of colonists, the dynamic displays may 
  - MossieurLeBlanc:	French translation
  - Jozay:	
  - duduluu:	
+ - 53N4:	
 
 # Think you found a bug? 
 Please read [this guide](http://steamcommunity.com/sharedfiles/filedetails/?id=725234314) before creating a bug report,
@@ -36,4 +37,4 @@ Show your appreciation by buying me a coffee (or contribute towards a nice singl
 [![Buy Me a Coffee](http://i.imgur.com/EjWiUwx.gif)](https://ko-fi.com/fluffymods)
 
 # Version
-This is version 1.12.55, for RimWorld 0.19.2009.
+This is version 1.13.58, for RimWorld 0.19.2009.
