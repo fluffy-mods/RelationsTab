@@ -43,16 +43,16 @@ namespace Fluffy_Relations
             // min opinion threshold
             DrawLabeledInput(
                              ref curY, canvas,
-                             "Lower opinion threshold",
+                             "Fluffy_Relations.LowerOpinionThreshold".Translate(),
                              ref RelationsHelper.OPINION_THRESHOLD_NEG,
-                             "Pawns with an opinion of eachother below this threshold will always be visually linked.");
+                             "Fluffy_Relations.LowerOpinionThreshold.Tip".Translate() );
 
             // max opinion threshold
             DrawLabeledInput(
                              ref curY, canvas,
-                             "Upper opinion threshold",
+                             "Fluffy_Relations.UpperOpinionThreshold".Translate(),
                              ref RelationsHelper.OPINION_THRESHOLD_POS,
-                             "Pawns with an opinion of eachother above this threshold will always be visually linked.");
+                             "Fluffy_Relations.UpperOpinionThreshold.Tip".Translate() );
 
             // GRAPH OPTIONS
             Text.Font = GameFont.Medium;
