@@ -18,6 +18,7 @@ In games with many faction mods or a lot of colonists, the dynamic displays may 
  - duduluu:	Chinese translations
  - 53N4:	Spanish translation
  - Suh. Junmin:	Korean translation
+ - rw-chaos:	German translation (update)
 
 # Think you found a bug? 
 Please read [this guide](http://steamcommunity.com/sharedfiles/filedetails/?id=725234314) before creating a bug report,
@@ -38,4 +39,4 @@ Show your appreciation by buying me a coffee (or contribute towards a nice singl
 [![Buy Me a Coffee](http://i.imgur.com/EjWiUwx.gif)](https://ko-fi.com/fluffymods)
 
 # Version
-This is version 2.2.66, for RimWorld 1.0.2059.
+This is version 2.3.68, for RimWorld 1.0.2059.
