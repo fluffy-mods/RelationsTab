@@ -47,8 +47,8 @@ namespace Fluffy_Relations
         public static void CacheBaseTextures()
         {
             foreach (var faction in DefDatabase<FactionDef>.AllDefsListForReading)
-                if (!faction.homeIconPath.NullOrEmpty())
-                    baseTextures.Add(faction, ContentFinder<Texture2D>.Get(faction.homeIconPath));
+                if (!faction.settlementTexturePath.NullOrEmpty())
+                    baseTextures.Add(faction, ContentFinder<Texture2D>.Get(faction.settlementTexturePath ));
         }
     }
 }

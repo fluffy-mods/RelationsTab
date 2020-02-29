@@ -195,7 +195,7 @@ namespace Fluffy_Relations
                         node.PostDrawExtras += delegate
                         {
                             var factionIconRect = new Rect(node.slot.xMin, node.slot.yMin, 16f, 16f);
-                            PawnSlotDrawer.DrawTextureColoured(factionIconRect, node.pawn.Faction.def.ExpandingIconTexture, node.pawn.Faction.Color);
+                            PawnSlotDrawer.DrawTextureColoured(factionIconRect, node.pawn.Faction.def.FactionIcon, node.pawn.Faction.Color);
                         };
 
                         node.OnHover += () => TooltipHandler.TipRegion( node.slot, node.pawn.Faction.GetTooltip( Faction.OfPlayer ) );
@@ -240,7 +240,7 @@ namespace Fluffy_Relations
                     node.PostDrawExtras += delegate
                     {
                         var factionIconRect = new Rect( node.slot.xMin, node.slot.yMin, 16f, 16f );
-                        PawnSlotDrawer.DrawTextureColoured( factionIconRect, fnode.faction.def.ExpandingIconTexture, fnode.faction.Color );
+                        PawnSlotDrawer.DrawTextureColoured( factionIconRect, fnode.faction.def.FactionIcon, fnode.faction.Color );
                     };
 
                     // attach edges - assign selected to itself to trigger Set method.
@@ -360,7 +360,7 @@ namespace Fluffy_Relations
 
             // draw faction icons
             var informationIconRect = new Rect(pos.x, pos.y, 30f, 30f);
-            PawnSlotDrawer.DrawTextureColoured(informationIconRect, faction.def.ExpandingIconTexture, faction.Color);
+            PawnSlotDrawer.DrawTextureColoured(informationIconRect, faction.def.FactionIcon, faction.Color);
             informationIconRect.x += 36f;
             pos.x += 36f;
             Texture2D baseTexture;

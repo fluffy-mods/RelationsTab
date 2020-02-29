@@ -77,7 +77,7 @@ namespace Fluffy_Relations
                 throw new ArgumentNullException(nameof(faction));
 
             return faction == Faction.OfPlayer
-                       ? faction.HasName ? faction.Name : "Fluffy.Relations.Colony".Translate()
+                       ? faction.HasName ? faction.Name : "Fluffy.Relations.Colony".Translate().Resolve()
                        : faction.GetCallLabel();
         }
 
