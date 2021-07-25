@@ -1,4 +1,4 @@
-[![RimWorld 1.2](https://img.shields.io/badge/RimWorld-1.2-brightgreen.svg)](http://rimworldgame.com/)
+[![RimWorld 1.3](https://img.shields.io/badge/RimWorld-1.3-brightgreen.svg)](http://rimworldgame.com/)
 
 Replaces the faction tab with a relations tab. The relations tab shows, in a very graphical way, relations between your colonists and with other factions. 
 
@@ -43,4 +43,4 @@ Become a supporter and show your appreciation by buying me a coffee (or contribu
 
 
 ![Version](https://banners.karel-kroeze.nl/title/Version.png)  
-This is version 2.6.71, for RimWorld 1.2.2719.
+This is version 2.6.72, for RimWorld 1.3.3071.

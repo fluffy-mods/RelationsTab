@@ -258,7 +258,7 @@ namespace Fluffy_Relations
             graph.Update();
 
             // set size and draw background
-            base.DoWindowContents( canvas );
+            //base.DoWindowContents( canvas );
 
             // source selection button
             DrawSourceButton();
@@ -452,7 +452,7 @@ namespace Fluffy_Relations
                             extraPartWidth: 24f,
                             extraPartOnGUI: (rect) =>
                             {
-                                GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height)));
+                                GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height), Rot4.South));
                                 return Widgets.ButtonInvisible(rect);
                             }));
                     }
@@ -472,7 +472,7 @@ namespace Fluffy_Relations
                             extraPartWidth: 24f,
                             extraPartOnGUI: (rect) =>
                             {
-                                GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height)));
+                                GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height), Rot4.South));
                                 return Widgets.ButtonInvisible(rect);
                             }));
                     }
