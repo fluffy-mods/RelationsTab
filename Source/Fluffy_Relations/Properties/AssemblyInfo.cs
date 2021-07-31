@@ -33,4 +33,8 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.0")]
+<<<<<<< HEAD
 [assembly: AssemblyFileVersion("2.6.74")]
+=======
+[assembly: AssemblyFileVersion("2.6.72")]
+>>>>>>> pr/exodusferret/34

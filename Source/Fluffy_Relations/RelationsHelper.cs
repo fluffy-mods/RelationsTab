@@ -199,7 +199,7 @@ namespace Fluffy_Relations
             }
 
             if (faction.leader == null)
-                faction.GenerateNewLeader();
+                faction.TryGenerateNewLeader();
 
             return faction.leader;
         }

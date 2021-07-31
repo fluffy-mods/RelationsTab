@@ -14,7 +14,7 @@ namespace Fluffy_Relations
 
         public static void DrawPawnInSlot(Pawn pawn, Rect slot)
         {
-            GUI.DrawTexture( slot, PortraitsCache.Get( pawn, Constants.SlotSizeVector, default(Vector3), 1.22f ) );
+            GUI.DrawTexture( slot, PortraitsCache.Get( pawn, Constants.SlotSizeVector, Rot4.South, default(Vector3), 1.22f ) );
         }
 
         public static void DrawSlot(this Pawn pawn, Rect slot, bool drawBG = true, bool drawLabel = true,
