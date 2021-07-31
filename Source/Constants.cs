@@ -1,16 +1,12 @@
-﻿// Karel Kroeze
+// Karel Kroeze
 // Constants.cs
 // 2016-12-26
 
 using System;
-using RimWorld;
 using UnityEngine;
-using Verse;
 
-namespace Fluffy_Relations
-{
-    public static class Constants
-    {
+namespace Fluffy_Relations {
+    public static class Constants {
         #region Fields
 
         public const float IconSize = 24f;

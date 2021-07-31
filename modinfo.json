@@ -1,0 +1,132 @@
+{
+    "name": "Fluffy Relations",
+    "sourceDir": ".",
+    "targetDir": "FluffyRelations",
+    "url": "https://github.com/fluffy-mods/RelationsTab",
+    "version": {
+        "major": 3,
+        "minor": 0,
+        "build": 80
+    },
+    "author": {
+        "name": "Fluffy",
+        "url": "https://github.com/fluffy-mods/",
+        "email": "fluffy.l2032@gmail.com"
+    },
+    "git": {
+        "owner": "fluffy-mods",
+        "repo": "RelationsTab",
+        "url": "https://github.com/fluffy-mods/RelationsTab"
+    },
+    "changelog": [
+        {
+            "date": "2021-07-31T19:18:51.000Z",
+            "message": "Merge branch 'pr/exodusferret/34' into 1.3",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "223207735d595b56c55276010c72a6ffc0766c46"
+        },
+        {
+            "date": "2021-07-25T15:22:43.000Z",
+            "message": "build Fluffy_Relations.dll for 1.3",
+            "author": {
+                "name": "exodusferret",
+                "email": "xodusferret@users.noreply.github.com"
+            },
+            "hash": "c7a04731f24434d4f235d7a1578862ab1dbaff41"
+        },
+        {
+            "date": "2021-07-25T15:13:02.000Z",
+            "message": "Changes for 1.3",
+            "author": {
+                "name": "exodusferret",
+                "email": "xodusferret@users.noreply.github.com"
+            },
+            "hash": "386c2da105cb552ac41793cf05d74a71033505bd"
+        }
+    ],
+    "contributions": [
+        {
+            "hash": "c7a04731f24434d4f235d7a1578862ab1dbaff41",
+            "author": "exodusferret",
+            "description": "initial 1.3 update"
+        },
+        {
+            "hash": "386c2da105cb552ac41793cf05d74a71033505bd",
+            "author": "exodusferret",
+            "description": "Changes for 1.3",
+            "suppressed": true
+        },
+        {
+            "hash": "913d6403e88718514e4c9ab60b65c6980d672cd2",
+            "author": "rw-chaos",
+            "description": "Updated German Translation (#29)"
+        },
+        {
+            "hash": "193a5faa400c803a33eab000b20b7661bc028b05",
+            "author": "Suh. Junmin",
+            "description": "Add korean translation (#28)"
+        },
+        {
+            "hash": "1d5798553576ad5fa95e2df4ca0eeae1ea1494db",
+            "author": "53N4",
+            "description": "Spanish translation (#27)"
+        },
+        {
+            "hash": "53d176f2090c51af69c530c6eb1c500ea0e5359d",
+            "author": "duduluu",
+            "description": "Add Chinese tanslations (#13)"
+        },
+        {
+            "hash": "97dd028d5a8d5eca0e0515e2010cf1ddd07683a2",
+            "author": "Jozay",
+            "description": "French translation (#5)"
+        }
+    ],
+    "contributors": {
+        "exodusferret": [
+            {
+                "hash": "c7a0473",
+                "author": "exodusferret",
+                "description": "initial 1.3 update"
+            }
+        ],
+        "rw-chaos": [
+            {
+                "hash": "913d640",
+                "author": "rw-chaos",
+                "description": "Updated German Translation (#29)"
+            }
+        ],
+        "Suh. Junmin": [
+            {
+                "hash": "193a5fa",
+                "author": "Suh. Junmin",
+                "description": "Add korean translation (#28)"
+            }
+        ],
+        "53N4": [
+            {
+                "hash": "1d57985",
+                "author": "53N4",
+                "description": "Spanish translation (#27)"
+            }
+        ],
+        "duduluu": [
+            {
+                "hash": "53d176f",
+                "author": "duduluu",
+                "description": "Add Chinese tanslations (#13)"
+            }
+        ],
+        "Jozay": [
+            {
+                "hash": "97dd028",
+                "author": "Jozay",
+                "description": "French translation (#5)"
+            }
+        ]
+    }
+}
