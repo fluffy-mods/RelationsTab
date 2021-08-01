@@ -155,6 +155,11 @@ namespace Fluffy_Relations {
         }
 
         public void CreateGraph() {
+            // Check if Ideology is installed and enabled
+            // TODO: Maybe move this to Utilities
+            bool ideologyInstalledAndActive = ModLister.IdeologyInstalled
+                && ModLister.GetModWithIdentifier("Ludeon.RimWorld.Ideology").Active;
+
             // calculate positions
             graph = new Graph(networkRect.size);
             if (CurrentPage == Page.Colonists) {
@@ -182,12 +187,32 @@ namespace Fluffy_Relations {
                                     16f, 16f), Resources.Pin);
                         }
                     };
+                    // If Ideology is enabled add corresponding icons and information about the pawns
+                    if (ideologyInstalledAndActive) {
+                        node.PostDrawExtras += delegate {
+                            Rect ideologyIconRect = new Rect(node.slot.xMin, node.slot.yMin, 16f, 16f);
+                            PawnSlotDrawer.DrawTextureColoured(ideologyIconRect, node.pawn.Ideo.Icon, node.pawn.Ideo.Color);
+                        };
+
+                        // TODO: Look into reusable code from CharacterCardUtility.DrawCharacterCard
+                        // TODO: Localize
+                        node.OnHover += () => TooltipHandler.TipRegion(node.slot,
+                            node.pawn.NameFullColored + " believes in " + node.pawn.Ideo.name.Colorize(node.pawn.Ideo.Color) + ".\n\n" +
+                            "They are " + node.pawn.ideo.Certainty.ToStringPercent() + " certain in this ideology."
+                        );
+                    }
                     if (node.secondary && (!node.pawn.Faction?.IsPlayer ?? false)) {
                         node.PostDrawExtras += delegate {
-                            Rect factionIconRect = new Rect(node.slot.xMin, node.slot.yMin, 16f, 16f);
+                            Rect factionIconRect = new Rect(node.slot.xMin,
+                                    // Only add offset if Ideology is installed and hence there is another icon
+                                    node.slot.yMin + (ideologyInstalledAndActive ?  20f : 0f), 16f, 16f);
                             PawnSlotDrawer.DrawTextureColoured(factionIconRect, node.pawn.Faction.def.FactionIcon, node.pawn.Faction.Color);
                         };
 
+                        // FIXME: there is a display error for relation to other's faction:
+                        // Text that is displayed is like this:
+                        // 's opinion of [Faction name here]: [Relation factor]
+                        // So the home faction or pawn name is missing
                         node.OnHover += () => TooltipHandler.TipRegion(node.slot, node.pawn.Faction.GetTooltip(Faction.OfPlayer));
                     }
 
@@ -226,6 +251,18 @@ namespace Fluffy_Relations {
                         Rect factionIconRect = new Rect( node.slot.xMin, node.slot.yMin, 16f, 16f );
                         PawnSlotDrawer.DrawTextureColoured(factionIconRect, fnode.faction.def.FactionIcon, fnode.faction.Color);
                     };
+                    // If Ideology is enabled add corresponding icons and information about the faction
+                    if (ideologyInstalledAndActive) {
+                        node.PostDrawExtras += delegate {
+                            Rect ideologyIconRect = new Rect(node.slot.xMin, node.slot.yMin + 20f, 16f, 16f);
+                            PawnSlotDrawer.DrawTextureColoured(ideologyIconRect, fnode.faction.ideos.PrimaryIdeo.Icon, fnode.faction.ideos.PrimaryIdeo.Color);
+                        };
+
+                        // TODO: Localize
+                        node.OnHover += () => TooltipHandler.TipRegion(node.slot,
+                            fnode.faction.NameColored + " mainly believes in " + fnode.faction.ideos.PrimaryIdeo.name.Colorize(fnode.faction.ideos.PrimaryIdeo.Color) + "."
+                        );
+                    }
 
                     // attach edges - assign selected to itself to trigger Set method.
                     SelectedFaction = null;
@@ -338,6 +375,13 @@ namespace Fluffy_Relations {
             // relations
             pos.y += DrawFactioRelations(faction, pos, canvas.width) + StandardMargin;
 
+            // Check if Ideology is installed and enabled
+            if (ModLister.IdeologyInstalled && ModLister.GetModWithIdentifier("Ludeon.RimWorld.Ideology").Active) {
+                // ideology
+                pos.y += DrawFactionIdeology(faction, pos, canvas.width) + StandardMargin;
+            }
+            
+
             Widgets.EndScrollView();
             _factionDetailHeight = pos.y - canvas.yMin;
         }
@@ -404,6 +448,19 @@ namespace Fluffy_Relations {
                     SelectedFaction = other;
                 }
             }
+
+            return pos.y - startPos.y;
+        }
+
+        public float DrawFactionIdeology(Faction faction, Vector2 pos, float width) {
+            Vector2 startPos = pos;
+            // TODO: Localize
+            // FIXME: Colorize label properly, right now only white gets displayed
+            Utilities.Label(ref pos, width,
+                faction.NameColored + " mainly believes in " +
+                faction.ideos.PrimaryIdeo.name.Colorize(faction.ideos.PrimaryIdeo.Color),
+                Color.white, GameFont.Medium);
+            Utilities.Label(ref pos, width, faction.ideos.PrimaryIdeo.description);
 
             return pos.y - startPos.y;
         }
