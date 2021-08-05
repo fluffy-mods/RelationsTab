@@ -192,11 +192,8 @@ namespace Fluffy_Relations {
                             PawnSlotDrawer.DrawTextureColoured(ideologyIconRect, node.pawn.Ideo.Icon, node.pawn.Ideo.Color);
                         };
 
-                        // TODO: Look into reusable code from CharacterCardUtility.DrawCharacterCard
-                        // TODO: Localize
                         node.OnHover += () => TooltipHandler.TipRegion(node.slot,
-                            node.pawn.NameFullColored + " believes in " + node.pawn.Ideo.name.Colorize(node.pawn.Ideo.Color) + ".\n\n" +
-                            "They are " + node.pawn.ideo.Certainty.ToStringPercent() + " certain in this ideology."
+                        $"{node.pawn.Ideo.name.Colorize(ColoredText.TipSectionTitleColor)}\n{"Certainty".Translate().CapitalizeFirst().Resolve()}: {node.pawn.ideo.Certainty.ToStringPercent()}"
                         );
                     }
                     if (node.secondary && (!node.pawn.Faction?.IsPlayer ?? false)) {
