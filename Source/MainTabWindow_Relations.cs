@@ -156,9 +156,7 @@ namespace Fluffy_Relations {
 
         public void CreateGraph() {
             // Check if Ideology is installed and enabled
-            // TODO: Maybe move this to Utilities
-            bool ideologyInstalledAndActive = ModLister.IdeologyInstalled
-                && ModLister.GetModWithIdentifier("Ludeon.RimWorld.Ideology").Active;
+            bool ideologyInstalledAndActive = ModsConfig.IdeologyActive;
 
             // calculate positions
             graph = new Graph(networkRect.size);
@@ -380,7 +378,7 @@ namespace Fluffy_Relations {
                 // ideology
                 pos.y += DrawFactionIdeology(faction, pos, canvas.width) + StandardMargin;
             }
-            
+
 
             Widgets.EndScrollView();
             _factionDetailHeight = pos.y - canvas.yMin;
