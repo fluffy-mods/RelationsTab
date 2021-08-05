@@ -160,7 +160,11 @@ namespace Fluffy_Relations {
         public static string GetTooltip(this Faction faction, Faction other) {
             string tip = "Fluffy_Relations.NodeInteractionTip".Translate(faction.GetCallLabel());
             if (other != null && other != faction) {
-                tip += "Fluffy_Relations.Possesive".Translate(other.GetCallLabel());
+                if (other == Faction.OfPlayer) {
+                    tip += "Fluffy_Relations.Our".Translate().CapitalizeFirst();
+                } else {
+                    tip += "Fluffy_Relations.Possesive".Translate(other.GetCallLabel());
+                }
                 tip += "Fluffy_Relations.OpinionOf".Translate(faction.GetCallLabel(),
                                                                Mathf.RoundToInt(other.GoodwillWith(faction)));
             }

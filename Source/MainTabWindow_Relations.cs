@@ -204,10 +204,6 @@ namespace Fluffy_Relations {
                             PawnSlotDrawer.DrawTextureColoured(factionIconRect, node.pawn.Faction.def.FactionIcon, node.pawn.Faction.Color);
                         };
 
-                        // FIXME: there is a display error for relation to other's faction:
-                        // Text that is displayed is like this:
-                        // 's opinion of [Faction name here]: [Relation factor]
-                        // So the home faction or pawn name is missing
                         node.OnHover += () => TooltipHandler.TipRegion(node.slot, node.pawn.Faction.GetTooltip(Faction.OfPlayer));
                     }
 

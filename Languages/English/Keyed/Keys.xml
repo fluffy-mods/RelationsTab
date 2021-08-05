@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
-    <Fluffy_Relations>Relations Tab</Fluffy_Relations>
+    <Fluffy_Relations>Fluffy Relations</Fluffy_Relations>
+    <Fluffy_Relations.Our>our</Fluffy_Relations.Our>
     <Fluffy_Relations.Possesive>{0}'s </Fluffy_Relations.Possesive>
     <Fluffy_Relations.Colonists>Colonists</Fluffy_Relations.Colonists>
     <Fluffy_Relations.Factions>Factions</Fluffy_Relations.Factions>
