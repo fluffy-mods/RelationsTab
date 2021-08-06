@@ -6,7 +6,7 @@
     "version": {
         "major": 3,
         "minor": 0,
-        "build": 80
+        "build": 113
     },
     "author": {
         "name": "Fluffy",
@@ -19,6 +19,60 @@
         "url": "https://github.com/fluffy-mods/RelationsTab"
     },
     "changelog": [
+        {
+            "date": "2021-08-05T19:14:15.000Z",
+            "message": "fix missing label part on colony opinion of other factions",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "5a62c0291d5478a5dbfbb91f4d709e17e0529331"
+        },
+        {
+            "date": "2021-08-05T19:06:03.000Z",
+            "message": "copy tooltip text from CharacterCardUtility",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "5873684a3e01b7fc8c6440f056227a0040be3070"
+        },
+        {
+            "date": "2021-08-05T18:45:48.000Z",
+            "message": "use ModsConfig for ideology check",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "d067e689178ad2bdd94b76878b5bf76050223ab9"
+        },
+        {
+            "date": "2021-08-01T02:45:13.000Z",
+            "message": "Update Fluffy_Relations.dll",
+            "author": {
+                "name": "David Alexander Pfeiffer",
+                "email": "david.pfeiffer971@gmail.com"
+            },
+            "hash": "7506ce638bf6752a32b2eb4f82e857401d38d8ff"
+        },
+        {
+            "date": "2021-08-01T02:44:54.000Z",
+            "message": "Added ideology information on graph nodes and in faction panel",
+            "author": {
+                "name": "David Alexander Pfeiffer",
+                "email": "david.pfeiffer971@gmail.com"
+            },
+            "hash": "75f3ce5d034a4cb223b5ece187f5e3deabb4d068"
+        },
+        {
+            "date": "2021-07-31T21:39:17.000Z",
+            "message": "bit of cleanup, wip preview image",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "ab0967c0cf3883bf10dd0359fffcc436c4e0f16c"
+        },
         {
             "date": "2021-07-31T19:18:51.000Z",
             "message": "Merge branch 'pr/exodusferret/34' into 1.3",
@@ -83,6 +137,16 @@
             "hash": "97dd028d5a8d5eca0e0515e2010cf1ddd07683a2",
             "author": "Jozay",
             "description": "French translation (#5)"
+        },
+        {
+            "hash": "7506ce638bf6752a32b2eb4f82e857401d38d8ff",
+            "author": "David Alexander Pfeiffer",
+            "description": "Update Fluffy_Relations.dll"
+        },
+        {
+            "hash": "75f3ce5d034a4cb223b5ece187f5e3deabb4d068",
+            "author": "David Alexander Pfeiffer",
+            "description": "Added ideology information on graph nodes and in faction panel"
         }
     ],
     "contributors": {
@@ -126,6 +190,18 @@
                 "hash": "97dd028",
                 "author": "Jozay",
                 "description": "French translation (#5)"
+            }
+        ],
+        "David Alexander Pfeiffer": [
+            {
+                "hash": "7506ce6",
+                "author": "David Alexander Pfeiffer",
+                "description": "Update Fluffy_Relations.dll"
+            },
+            {
+                "hash": "75f3ce5",
+                "author": "David Alexander Pfeiffer",
+                "description": "Added ideology information on graph nodes and in faction panel"
             }
         ]
     }

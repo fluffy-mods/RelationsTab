@@ -185,26 +185,27 @@ namespace Fluffy_Relations {
                                     16f, 16f), Resources.Pin);
                         }
                     };
-                    // If Ideology is enabled add corresponding icons and information about the pawns
+                    // add ideology information
                     if (ideologyInstalledAndActive) {
                         node.PostDrawExtras += delegate {
-                            Rect ideologyIconRect = new Rect(node.slot.xMin, node.slot.yMin, 16f, 16f);
-                            PawnSlotDrawer.DrawTextureColoured(ideologyIconRect, node.pawn.Ideo.Icon, node.pawn.Ideo.Color);
+                            if (node.pawn.Ideo is Ideo ideo && node.pawn.ideo is not null) {
+                                Rect ideologyIconRect = new Rect(node.slot.xMin, node.slot.yMin, 16f, 16f);
+                                PawnSlotDrawer.DrawTextureColoured(ideologyIconRect, ideo.Icon, ideo.Color);
+                                TooltipHandler.TipRegion(ideologyIconRect,
+                                    $"{ideo.name.Colorize(ideo.Color)}\n{"Certainty".Translate().CapitalizeFirst().Resolve()}: {node.pawn.ideo.Certainty.ToStringPercent()}");
+                            }
                         };
-
-                        node.OnHover += () => TooltipHandler.TipRegion(node.slot,
-                        $"{node.pawn.Ideo.name.Colorize(ColoredText.TipSectionTitleColor)}\n{"Certainty".Translate().CapitalizeFirst().Resolve()}: {node.pawn.ideo.Certainty.ToStringPercent()}"
-                        );
                     }
+
+                    // if pawn is not a member of this colony, add faction information
                     if (node.secondary && (!node.pawn.Faction?.IsPlayer ?? false)) {
                         node.PostDrawExtras += delegate {
                             Rect factionIconRect = new Rect(node.slot.xMin,
                                     // Only add offset if Ideology is installed and hence there is another icon
                                     node.slot.yMin + (ideologyInstalledAndActive ?  20f : 0f), 16f, 16f);
                             PawnSlotDrawer.DrawTextureColoured(factionIconRect, node.pawn.Faction.def.FactionIcon, node.pawn.Faction.Color);
+                            TooltipHandler.TipRegion(factionIconRect, node.pawn.Faction.GetFactionRelationString(Faction.OfPlayer));
                         };
-
-                        node.OnHover += () => TooltipHandler.TipRegion(node.slot, node.pawn.Faction.GetTooltip(Faction.OfPlayer));
                     }
 
                     // add edges - assign SelectedPawn to null to trigger Set method and reset selected
@@ -219,7 +220,7 @@ namespace Fluffy_Relations {
 
                 foreach (Node node in graph.nodes) {
                     // attach event handlers to node
-                    if (!(node is FactionNode fnode)) {
+                    if (node is not FactionNode fnode) {
                         Log.Warning("Non-faction node in node list for faction tab. ");
                         continue;
                     }
@@ -242,17 +243,14 @@ namespace Fluffy_Relations {
                         Rect factionIconRect = new Rect( node.slot.xMin, node.slot.yMin, 16f, 16f );
                         PawnSlotDrawer.DrawTextureColoured(factionIconRect, fnode.faction.def.FactionIcon, fnode.faction.Color);
                     };
+
                     // If Ideology is enabled add corresponding icons and information about the faction
                     if (ideologyInstalledAndActive) {
                         node.PostDrawExtras += delegate {
                             Rect ideologyIconRect = new Rect(node.slot.xMin, node.slot.yMin + 20f, 16f, 16f);
                             PawnSlotDrawer.DrawTextureColoured(ideologyIconRect, fnode.faction.ideos.PrimaryIdeo.Icon, fnode.faction.ideos.PrimaryIdeo.Color);
+                            TooltipHandler.TipRegion(ideologyIconRect, fnode.faction.NameColored + " mainly believes in " + fnode.faction.ideos.PrimaryIdeo.name.Colorize(fnode.faction.ideos.PrimaryIdeo.Color) + ".");
                         };
-
-                        // TODO: Localize
-                        node.OnHover += () => TooltipHandler.TipRegion(node.slot,
-                            fnode.faction.NameColored + " mainly believes in " + fnode.faction.ideos.PrimaryIdeo.name.Colorize(fnode.faction.ideos.PrimaryIdeo.Color) + "."
-                        );
                     }
 
                     // attach edges - assign selected to itself to trigger Set method.
@@ -329,11 +327,7 @@ namespace Fluffy_Relations {
 
             // draw overview of traits and status effects relevant to social relations
             RelationsHelper.DrawSocialStatusEffectsSummary(pawnInfoRect, pawn);
-
-            // draw relations overview.
             SocialCardUtility.DrawRelationsAndOpinions(relationsRect, pawn);
-
-            // need to call log drawer through reflection. Geez.
             InteractionCardUtility.DrawInteractionsLog(interactionsRect, pawn, Find.PlayLog.AllEntries, 24);
             GUI.EndGroup();
         }
@@ -360,21 +354,21 @@ namespace Fluffy_Relations {
             // faction details
             pos.y += DrawFactionInformation(faction, pos, canvas.width) + StandardMargin;
 
+            // ideology
+            if (ModsConfig.IdeologyActive && faction.ideos?.PrimaryIdeo is not null) {
+                pos.y += DrawFactionIdeology(faction, pos, canvas.width) + StandardMargin;
+            }
+
             // kidnappees, if any
             pos.y += DrawFactionKidnappees(faction, pos, canvas.width) + StandardMargin;
 
             // relations
-            pos.y += DrawFactioRelations(faction, pos, canvas.width) + StandardMargin;
+            pos.y += DrawFactionRelations(faction, pos, canvas.width) + StandardMargin;
 
-            // Check if Ideology is installed and enabled
-            if (ModLister.IdeologyInstalled && ModLister.GetModWithIdentifier("Ludeon.RimWorld.Ideology").Active) {
-                // ideology
-                pos.y += DrawFactionIdeology(faction, pos, canvas.width) + StandardMargin;
-            }
 
 
             Widgets.EndScrollView();
-            _factionDetailHeight = pos.y - canvas.yMin;
+            _factionDetailHeight = pos.y - canvas.yMin + 30;
         }
 
         public float DrawFactionInformation(Faction faction, Vector2 pos, float width) {
@@ -396,14 +390,14 @@ namespace Fluffy_Relations {
 
             // faction leader
             Utilities.Label(ref pos, width, faction.def.leaderTitle.CapitalizeFirst() + ": "
-                + (faction.Leader()?.Name.ToStringFull ?? "Noone".Translate()));
+                + (faction.Leader()?.NameFullColored.Resolve() ?? "Noone".Translate()));
             DoLeaderSelectionButton(new Vector2(pos.x + width - SmallIconSize, pos.y - SmallIconSize), faction);
 
             // faction type (tech)
-            Utilities.Label(ref pos, width, faction.def.LabelCap + " (" + faction.def.techLevel + ")");
+            Utilities.Label(ref pos, width, faction.def.LabelCap.Colorize(faction.def.DefaultColor) + " (" + faction.def.techLevel.ToStringHuman() + ")");
 
             // faction description
-            Utilities.Label(ref pos, width, $"<i>{faction.def.description}</i>");
+            Utilities.Label(ref pos, width, faction.def.description);
 
             return pos.y - startPos.y;
         }
@@ -412,7 +406,7 @@ namespace Fluffy_Relations {
             Vector2 startPos = pos;
 
             if (faction.kidnapped?.KidnappedPawnsListForReading.Count > 0) {
-                Utilities.Label(ref pos, width, "Fluffy_Relations.KidnappedColonists".Translate(), Color.white, GameFont.Medium);
+                Utilities.Label(ref pos, width, "Fluffy_Relations.KidnappedColonists".Translate(), font: GameFont.Medium);
                 foreach (Pawn kidnappee in faction.kidnapped.KidnappedPawnsListForReading) {
                     Utilities.Label(ref pos, width, "\t" + kidnappee.Name);
                 }
@@ -420,11 +414,10 @@ namespace Fluffy_Relations {
             return pos.y - startPos.y;
         }
 
-        public float DrawFactioRelations(Faction faction, Vector2 pos, float width) {
+        public float DrawFactionRelations(Faction faction, Vector2 pos, float width) {
             Vector2 startPos = pos;
-            Utilities.Label(ref pos, width,
-                "Fluffy_Relations.Possesive".Translate(faction.GetFactionLabel()) +
-                "Fluffy_Relations.Relations".Translate(), Color.white, GameFont.Medium);
+
+            Utilities.Label(ref pos, width, "Fluffy_Relations.Relations".Translate(), font: GameFont.Medium);
             IOrderedEnumerable<Faction> otherFactions = Find.FactionManager
                 .AllFactionsVisible
                 .Where( other => other != faction &&
@@ -433,7 +426,7 @@ namespace Fluffy_Relations {
             foreach (Faction other in otherFactions) {
                 int opinion = Mathf.RoundToInt( other.GoodwillWith( faction ) );
                 Color color = RelationsHelper.GetRelationColor( opinion );
-                string label = faction.HostileTo(other) ? (string) "HostileTo".Translate(other.GetCallLabel() ?? other.GetFactionLabel()) : other.GetFactionLabel();
+                string label = faction.HostileTo(other) ?  "HostileTo".Translate(other.GetFactionLabel()) : other.GetFactionLabel();
                 label += ": " + opinion;
                 if (Utilities.ButtonLabel(ref pos, width, label, color)) {
                     SelectedFaction = other;
@@ -444,16 +437,24 @@ namespace Fluffy_Relations {
         }
 
         public float DrawFactionIdeology(Faction faction, Vector2 pos, float width) {
-            Vector2 startPos = pos;
-            // TODO: Localize
-            // FIXME: Colorize label properly, right now only white gets displayed
-            Utilities.Label(ref pos, width,
-                faction.NameColored + " mainly believes in " +
-                faction.ideos.PrimaryIdeo.name.Colorize(faction.ideos.PrimaryIdeo.Color),
-                Color.white, GameFont.Medium);
-            Utilities.Label(ref pos, width, faction.ideos.PrimaryIdeo.description);
+            Vector2 start = pos;
+            if (faction.ideos?.PrimaryIdeo is not Ideo primary) {
+                return 0;
+            }
 
-            return pos.y - startPos.y;
+            Rect iconRect = new Rect( pos.x, pos.y, 30, 30);
+            PawnSlotDrawer.DrawTextureColoured(iconRect, primary.Icon, primary.Color);
+            pos.x += 36;
+            Utilities.Label(ref pos, width - 36, "Fluffy_Relations.Ideoligion".Translate().CapitalizeFirst(), font: GameFont.Medium);
+            pos.x -= 36;
+            Utilities.Label(ref pos, width, primary.name.Colorize(primary.Color));
+            Utilities.Label(ref pos, width, primary.description);
+
+            if (faction.ideos.IdeosMinorListForReading.Any()) {
+                Utilities.Label(ref pos, width, "Fluffy_Relations.SecondaryIdeoligions".Translate(faction.ideos.IdeosMinorListForReading.Select(i => i.name.Colorize(i.Color)).ToCommaList()).CapitalizeFirst().Resolve());
+            }
+
+            return pos.y - start.y;
         }
 
         private void DoLeaderSelectionButton(Vector2 pos, Faction faction) {

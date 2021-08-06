@@ -23,7 +23,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
             }
 
             // get relevant opinion. Opinion between non-player faction is symmetric, but between player and faction IS NOT - while this has no gameplay impact, it's confusing as fuck.
-            float opinion = factionA == Faction.OfPlayer ? factionB.GoodwillWith(factionA) : (float) factionA.GoodwillWith(factionB);
+            float opinion = factionA == Faction.OfPlayer ? factionB.GoodwillWith(factionA) :  factionA.GoodwillWith(factionB);
 
             // draw lines
             Helpers.DrawBiDirectionalArrow(nodeA.position, nodeB.position, RelationsHelper.GetRelationColor(opinion));

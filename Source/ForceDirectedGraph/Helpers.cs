@@ -83,7 +83,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
         }
 
         public static Vector2 RandomPoint(this Rect rect) {
-            return new Vector2(UnityEngine.Random.Range(rect.xMin, rect.xMax), UnityEngine.Random.Range(rect.yMin, rect.yMax));
+            return new Vector2(Random.Range(rect.xMin, rect.xMax), Random.Range(rect.yMin, rect.yMax));
         }
 
         public static Vector2 RandomPointNearCentre(this Rect rect, float range) {

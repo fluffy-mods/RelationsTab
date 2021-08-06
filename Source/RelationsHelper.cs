@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -40,20 +41,17 @@ namespace Fluffy_Relations {
         }
 
         public static void DrawSocialStatusEffectsSummary(Rect canvas, Pawn pawn) {
-            GUI.BeginGroup(canvas);
-
-            float curY = 0f;
-            Rect mainDescRect = new Rect(0f, curY, canvas.width, Constants.RowHeight);
-            curY += Constants.RowHeight + Constants.Margin;
-            Rect summaryRect = new Rect(0f, curY, canvas.width, canvas.height - curY);
-
+            Rect mainDescRect = canvas.TakeRow();
             Widgets.Label(mainDescRect, pawn.MainDesc(true));
-            Widgets.Label(summaryRect,
-                           "Fluffy_Relations.SocialThoughsOfOthers".Translate() + ": <i>" +
+
+            if (ModsConfig.IdeologyActive && pawn.ideo is Pawn_IdeoTracker tracker && pawn.ideo.Ideo is Ideo ideo) {
+                Rect ideologyRect = canvas.TakeRow();
+                Widgets.Label(ideologyRect, "Fluffy_Relations.BelievesInXWithCertaintyY".Translate(ideo.name.Colorize(ideo.Color), tracker.Certainty.ToStringPercent()).Resolve().CapitalizeFirst());
+            }
+
+            Widgets.Label(canvas, "Fluffy_Relations.SocialThoughsOfOthers".Translate() + ": <i>" +
                            string.Join(", ", ThoughtsAbout[pawn].ToArray()) + "</i>");
             TooltipHandler.TipRegion(mainDescRect, pawn.ageTracker.AgeTooltipString);
-
-            GUI.EndGroup();
         }
 
         public static List<Pawn> GetDirectlyRelatedPawns(this Pawn pawn) {
@@ -144,31 +142,46 @@ namespace Fluffy_Relations {
         }
 
         public static string GetTooltip(this Pawn pawn, Pawn other) {
-            string tip = pawn.Name.ToStringFull;
+            StringBuilder tip = new StringBuilder();
+            tip.Append(pawn.NameFullColored.Resolve());
             if (other != null && other != pawn) {
-                tip += "\n\n";
-                tip += "Fluffy_Relations.Possesive".Translate(pawn.Name.ToStringShort);
-                tip += pawn.relations.OpinionExplanation(other);
-                tip += "\n\n";
-                tip += "Fluffy_Relations.Possesive".Translate(other.Name.ToStringShort);
-                tip += other.relations.OpinionExplanation(pawn);
+                tip.Append("\n\n");
+                tip.Append("Fluffy_Relations.Possesive".Translate(pawn.NameShortColored).Resolve());
+                tip.Append(pawn.relations.OpinionExplanation(other).LowercaseFirst());
+                tip.Append("\n\n");
+                tip.Append("Fluffy_Relations.Possesive".Translate(other.NameShortColored).Resolve());
+                tip.Append(other.relations.OpinionExplanation(pawn).LowercaseFirst());
             }
-            tip += "\n\n" + "Fluffy_Relations.NodeInteractionTip".Translate();
-            return tip;
+            tip.Append("\n\n");
+            tip.Append("Fluffy_Relations.NodeInteractionTip".Translate().Resolve());
+            return tip.ToString();
         }
 
         public static string GetTooltip(this Faction faction, Faction other) {
-            string tip = "Fluffy_Relations.NodeInteractionTip".Translate(faction.GetCallLabel());
-            if (other != null && other != faction) {
-                if (other == Faction.OfPlayer) {
-                    tip += "Fluffy_Relations.Our".Translate().CapitalizeFirst();
-                } else {
-                    tip += "Fluffy_Relations.Possesive".Translate(other.GetCallLabel());
-                }
-                tip += "Fluffy_Relations.OpinionOf".Translate(faction.GetCallLabel(),
-                                                               Mathf.RoundToInt(other.GoodwillWith(faction)));
+            StringBuilder tip = new StringBuilder();
+            tip.Append(faction.Name.Colorize(faction.Color));
+            if (other != null && faction != other) {
+                tip.Append("\n\n");
+                tip.Append(GetFactionRelationString(faction, other));
             }
-            return tip;
+            tip.Append("\n\n");
+            tip.Append("Fluffy_Relations.NodeInteractionTip".Translate().Resolve());
+            return tip.ToString();
+        }
+
+        public static string GetFactionRelationString(this Faction faction, Faction other) {
+            if (other == null || other == faction) {
+                return "";
+            }
+            StringBuilder tip = new();
+            if (other == Faction.OfPlayer) {
+                tip.Append("Fluffy_Relations.Our".Translate().CapitalizeFirst().Resolve());
+            } else {
+                tip.Append("Fluffy_Relations.Possesive".Translate(other.Name.Colorize(other.Color)).Resolve());
+            }
+            int goodwill = Mathf.RoundToInt(other.GoodwillWith(faction));
+            tip.Append("Fluffy_Relations.OpinionOf".Translate(faction.Name.Colorize(faction.Color), goodwill.ToStringWithSign().Colorize(GetRelationColor(goodwill))).Resolve());
+            return tip.ToString();
         }
 
         public static bool IsSocialThought(Thought thought) {
@@ -198,7 +211,7 @@ namespace Fluffy_Relations {
         }
 
         public static float OpinionOfCached(this Pawn pawn, Pawn other, bool abs = false) {
-            Pair<Pawn, Pawn> pair = new Pair<Pawn, Pawn>(pawn, other);
+            Pair<Pawn, Pawn> pair = new(pawn, other);
             if (!_opinions.ContainsKey(pair)) {
                 float opinion = pawn.relations.OpinionOf(other);
                 _opinions.Add(pair, opinion);
@@ -244,9 +257,8 @@ namespace Fluffy_Relations {
                     List<ISocialThought> DistinctSocialThoughtGroups = new List<ISocialThought>();
                     thoughts.GetDistinctSocialThoughtGroups(pawn, DistinctSocialThoughtGroups);
                     foreach (ISocialThought t in DistinctSocialThoughtGroups) {
-                        Thought thought = (Thought)t;
-                        if (t.OpinionOffset() != 0) {
-                            ThoughtsAbout[pawn].Add(thought.LabelCapSocial);
+                        if (t is Thought thought && t.OpinionOffset() != 0) {
+                            ThoughtsAbout[pawn].Add(thought.LabelCapSocial.Colorize(GetRelationColor(t.OpinionOffset())));
                         }
                     }
                 }

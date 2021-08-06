@@ -61,5 +61,34 @@ namespace Fluffy_Relations {
             Widgets.DrawHighlightIfMouseover(rect);
             return Widgets.ButtonInvisible(rect);
         }
+
+        public static string LowercaseFirst(this string text) {
+            {
+                if (text.NullOrEmpty()) {
+                    return text;
+                }
+                if (char.IsLower(text[0])) {
+                    return text;
+                }
+                if (text.Length == 1) {
+                    return text.ToLower();
+                }
+                int num = text.FirstLetterBetweenTags();
+                if (num == 0) {
+                    return char.ToLower(text[num]).ToString() + text.Substring(num + 1);
+                }
+                return text.Substring(0, num) + char.ToLower(text[num]).ToString() + text.Substring(num + 1);
+            }
+        }
+
+        public static Rect TakeTopPartPixels(this ref Rect rect, float pixels, float margin = 0f) {
+            Rect topPart = rect.TopPartPixels(pixels);
+            rect.yMin += pixels + margin;
+            return topPart;
+        }
+
+        public static Rect TakeRow(this ref Rect rect, float margin = Constants.Margin) {
+            return rect.TakeTopPartPixels(Constants.RowHeight, margin);
+        }
     }
 }

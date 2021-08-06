@@ -16,6 +16,7 @@ Suh. Junmin: [Add korean translation (#28)](https://github.com/fluffy-mods/Relat
 53N4: [Spanish translation (#27)](https://github.com/fluffy-mods/RelationsTab/commit/1d57985)
 duduluu: [Add Chinese tanslations (#13)](https://github.com/fluffy-mods/RelationsTab/commit/53d176f)
 Jozay: [French translation (#5)](https://github.com/fluffy-mods/RelationsTab/commit/97dd028)
+David Alexander Pfeiffer: [Update Fluffy_Relations.dll](https://github.com/fluffy-mods/RelationsTab/commit/7506ce6), [Added ideology information on graph nodes and in faction panel](https://github.com/fluffy-mods/RelationsTab/commit/75f3ce5)
 
 
 ![Think you found a bug?](https://banners.karel-kroeze.nl/title/Think%20you%20found%20a%20bug%3F.png)  

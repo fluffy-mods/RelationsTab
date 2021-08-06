@@ -3,8 +3,12 @@
     <Fluffy_Relations>Fluffy Relations</Fluffy_Relations>
     <Fluffy_Relations.Our>our</Fluffy_Relations.Our>
     <Fluffy_Relations.Possesive>{0}'s </Fluffy_Relations.Possesive>
+    <Fluffy_Relations.BelievesInXWithCertaintyY>believes in {0}, with {1} certainty</Fluffy_Relations.BelievesInXWithCertaintyY>
+    <Fluffy_Relations.Ideoligion>ideoligion</Fluffy_Relations.Ideoligion>
+    <Fluffy_Relations.SecondaryIdeoligions>other ideoligions: {0}</Fluffy_Relations.SecondaryIdeoligions>
     <Fluffy_Relations.Colonists>Colonists</Fluffy_Relations.Colonists>
     <Fluffy_Relations.Factions>Factions</Fluffy_Relations.Factions>
+    <Fluffy_Relations.Ideoligions>Ideoligions</Fluffy_Relations.Ideoligions>
     <Fluffy.Relations.Colony>Colony</Fluffy.Relations.Colony>
     <Fluffy_Relations.SourceButtonTip>Switch between colonists and factions</Fluffy_Relations.SourceButtonTip>
     <Fluffy_Relations.Relations>Relations</Fluffy_Relations.Relations>
@@ -14,7 +18,7 @@
     <Fluffy_Relations.NothingSelected></Fluffy_Relations.NothingSelected>
     <Fluffy_Relations.ModeCircleTip>Switch to circular layout</Fluffy_Relations.ModeCircleTip>
     <Fluffy_Relations.GraphResetTip>Restart dynamic layout</Fluffy_Relations.GraphResetTip>
-    <Fluffy_Relations.NodeInteractionTip>Left-Click to select.\nRight-Click to unpin.\nClick and drag to move.\n</Fluffy_Relations.NodeInteractionTip>
+    <Fluffy_Relations.NodeInteractionTip>&lt;b&gt;Left-Click&lt;/b&gt; to select.\n&lt;b&gt;Right-Click&lt;/b&gt; to unpin.\n&lt;b&gt;Click and drag&lt;/b&gt; to move.\n</Fluffy_Relations.NodeInteractionTip>
     <Fluffy_Relations.ModeGraphTip>Switch to dynamic layout</Fluffy_Relations.ModeGraphTip>
     <Fluffy_Relations.RelationOptions>Relation options</Fluffy_Relations.RelationOptions>
     <Fluffy_Relations.GraphOptions>Dynamic parameters</Fluffy_Relations.GraphOptions>
