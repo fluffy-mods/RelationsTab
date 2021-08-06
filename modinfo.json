@@ -20,6 +20,15 @@
     },
     "changelog": [
         {
+            "date": "2021-08-06T20:35:05.000Z",
+            "message": "oh god no that preview image wasn't ready",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "4bdc12c8fd548e0354c5c47bfbd136dedbeb64bf"
+        },
+        {
             "date": "2021-08-06T20:27:00.000Z",
             "message": "add ideoligion info and randomly sprinple some color",
             "author": {
