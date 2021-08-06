@@ -209,5 +209,13 @@
                 "description": "add ideology information sections"
             }
         ]
-    }
+    },
+    "attributions": [
+        {
+            "description": "preview family tree icon",
+            "author": "Freepik",
+            "license": "BY-NC",
+            "url": "https://www.freepik.com/"
+        }
+    ]
 }
