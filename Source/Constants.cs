@@ -20,7 +20,7 @@ namespace Fluffy_Relations {
         public const float RowHeight = 24f;
         public const float ScrollbarWidth = 19f;
         public const float SlotSize = 70f;
-        public static Vector2 SlotSizeVector = new Vector2( SlotSize, SlotSize );
+        public static Vector2 SlotSizeVector = new( SlotSize, SlotSize );
 
         #endregion Fields
     }

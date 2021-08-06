@@ -8,7 +8,7 @@ namespace Fluffy_Relations {
         private readonly float width;
         private readonly string message;
         private readonly GameFont font;
-        private static readonly Dictionary<LabelPars, float> _labelHeightCache = new Dictionary<LabelPars, float>();
+        private static readonly Dictionary<LabelPars, float> _labelHeightCache = new();
 
         public LabelPars(float width, string message, GameFont font) {
             this.width = width;
@@ -43,9 +43,9 @@ namespace Fluffy_Relations {
     }
     public static class Utilities {
         public static void Label(ref Vector2 pos, float width, string message, Color? color = null, GameFont font = GameFont.Small) {
-            LabelPars pars = new LabelPars( width, message, font );
+            LabelPars pars = new( width, message, font );
             float height = pars.Height;
-            Rect rect = new Rect( pos.x, pos.y, width, height );
+            Rect rect = new( pos.x, pos.y, width, height );
             GUI.color = color ?? Color.white;
             Text.Font = font;
             Widgets.Label(rect, message);
@@ -57,7 +57,7 @@ namespace Fluffy_Relations {
         public static bool ButtonLabel(ref Vector2 pos, float width, string message, Color? color = null) {
             Vector2 startPos = pos;
             Label(ref pos, width, message, color);
-            Rect rect = new Rect( startPos.x, startPos.y, width, pos.y - startPos.y );
+            Rect rect = new( startPos.x, startPos.y, width, pos.y - startPos.y );
             Widgets.DrawHighlightIfMouseover(rect);
             return Widgets.ButtonInvisible(rect);
         }

@@ -12,8 +12,8 @@ namespace Fluffy_Relations {
     public static class Resources {
         #region Fields
 
-        public static Rect baseSlot = new Rect(0f, 0f, Constants.SlotSize, Constants.SlotSize);
-        public static Dictionary<FactionDef, Texture2D> baseTextures = new Dictionary<FactionDef, Texture2D>();
+        public static Rect baseSlot = new(0f, 0f, Constants.SlotSize, Constants.SlotSize);
+        public static Dictionary<FactionDef, Texture2D> baseTextures = new();
 
         // colors
         public static Color

@@ -60,7 +60,7 @@ namespace Fluffy_Relations {
             }
         }
 
-        public override Vector2 InitialSize => new Vector2(UI.screenWidth, UI.screenHeight - 35f);
+        public override Vector2 InitialSize => new(UI.screenWidth, UI.screenHeight - 35f);
 
         public Faction SelectedFaction {
             get => _selectedFaction;
@@ -189,7 +189,7 @@ namespace Fluffy_Relations {
                     if (ideologyInstalledAndActive) {
                         node.PostDrawExtras += delegate {
                             if (node.pawn.Ideo is Ideo ideo && node.pawn.ideo is not null) {
-                                Rect ideologyIconRect = new Rect(node.slot.xMin, node.slot.yMin, 16f, 16f);
+                                Rect ideologyIconRect = new(node.slot.xMin, node.slot.yMin, 16f, 16f);
                                 PawnSlotDrawer.DrawTextureColoured(ideologyIconRect, ideo.Icon, ideo.Color);
                                 TooltipHandler.TipRegion(ideologyIconRect,
                                     $"{ideo.name.Colorize(ideo.Color)}\n{"Certainty".Translate().CapitalizeFirst().Resolve()}: {node.pawn.ideo.Certainty.ToStringPercent()}");
@@ -200,7 +200,7 @@ namespace Fluffy_Relations {
                     // if pawn is not a member of this colony, add faction information
                     if (node.secondary && (!node.pawn.Faction?.IsPlayer ?? false)) {
                         node.PostDrawExtras += delegate {
-                            Rect factionIconRect = new Rect(node.slot.xMin,
+                            Rect factionIconRect = new(node.slot.xMin,
                                     // Only add offset if Ideology is installed and hence there is another icon
                                     node.slot.yMin + (ideologyInstalledAndActive ?  20f : 0f), 16f, 16f);
                             PawnSlotDrawer.DrawTextureColoured(factionIconRect, node.pawn.Faction.def.FactionIcon, node.pawn.Faction.Color);
@@ -240,14 +240,14 @@ namespace Fluffy_Relations {
                         }
                     };
                     node.PostDrawExtras += delegate {
-                        Rect factionIconRect = new Rect( node.slot.xMin, node.slot.yMin, 16f, 16f );
+                        Rect factionIconRect = new( node.slot.xMin, node.slot.yMin, 16f, 16f );
                         PawnSlotDrawer.DrawTextureColoured(factionIconRect, fnode.faction.def.FactionIcon, fnode.faction.Color);
                     };
 
                     // If Ideology is enabled add corresponding icons and information about the faction
                     if (ideologyInstalledAndActive) {
                         node.PostDrawExtras += delegate {
-                            Rect ideologyIconRect = new Rect(node.slot.xMin, node.slot.yMin + 20f, 16f, 16f);
+                            Rect ideologyIconRect = new(node.slot.xMin, node.slot.yMin + 20f, 16f, 16f);
                             PawnSlotDrawer.DrawTextureColoured(ideologyIconRect, fnode.faction.ideos.PrimaryIdeo.Icon, fnode.faction.ideos.PrimaryIdeo.Color);
                             TooltipHandler.TipRegion(ideologyIconRect, fnode.faction.NameColored + " mainly believes in " + fnode.faction.ideos.PrimaryIdeo.name.Colorize(fnode.faction.ideos.PrimaryIdeo.Color) + ".");
                         };
@@ -305,13 +305,13 @@ namespace Fluffy_Relations {
             float availableHeight = canvas.height - (( titleHeight + margin ) * numSections);
 
             // set up rects
-            Rect pawnInfoTitleRect = new Rect( 0f, 0f, canvas.width, titleHeight );
-            Rect pawnInfoRect = new Rect( 0f, titleHeight + margin, canvas.width, availableHeight / 5f );
-            Rect relationsTitleRect = new Rect( 0f, pawnInfoRect.yMax, canvas.width, titleHeight );
-            Rect relationsRect = new Rect( 0f, relationsTitleRect.yMax + margin, canvas.width,
+            Rect pawnInfoTitleRect = new( 0f, 0f, canvas.width, titleHeight );
+            Rect pawnInfoRect = new( 0f, titleHeight + margin, canvas.width, availableHeight / 5f );
+            Rect relationsTitleRect = new( 0f, pawnInfoRect.yMax, canvas.width, titleHeight );
+            Rect relationsRect = new( 0f, relationsTitleRect.yMax + margin, canvas.width,
                 availableHeight / 5f * 2f );
-            Rect interactionsTitleRect = new Rect( 0f, relationsRect.yMax + margin, canvas.width, titleHeight );
-            Rect interactionsRect = new Rect( 0f, interactionsTitleRect.yMax + margin, canvas.width,
+            Rect interactionsTitleRect = new( 0f, relationsRect.yMax + margin, canvas.width, titleHeight );
+            Rect interactionsRect = new( 0f, interactionsTitleRect.yMax + margin, canvas.width,
                 availableHeight / 5f * 2f );
 
             // titles
@@ -332,10 +332,10 @@ namespace Fluffy_Relations {
             GUI.EndGroup();
         }
 
-        public static List<Func<Faction, Vector2, float, float>> ExtraFactionDetailDrawers = new List<Func<Faction, Vector2, float, float>>();
+        public static List<Func<Faction, Vector2, float, float>> ExtraFactionDetailDrawers = new();
         public void DrawDetails(Rect canvas, Faction faction) {
             Vector2 pos = canvas.min;
-            Rect viewRect = new Rect(
+            Rect viewRect = new(
                 pos.x,
                 pos.y,
                 canvas.width,
@@ -375,7 +375,7 @@ namespace Fluffy_Relations {
             Vector2 startPos = pos;
 
             // draw faction icons
-            Rect informationIconRect = new Rect(pos.x, pos.y, 30f, 30f);
+            Rect informationIconRect = new(pos.x, pos.y, 30f, 30f);
             PawnSlotDrawer.DrawTextureColoured(informationIconRect, faction.def.FactionIcon, faction.Color);
             informationIconRect.x += 36f;
             pos.x += 36f;
@@ -442,7 +442,7 @@ namespace Fluffy_Relations {
                 return 0;
             }
 
-            Rect iconRect = new Rect( pos.x, pos.y, 30, 30);
+            Rect iconRect = new( pos.x, pos.y, 30, 30);
             PawnSlotDrawer.DrawTextureColoured(iconRect, primary.Icon, primary.Color);
             pos.x += 36;
             Utilities.Label(ref pos, width - 36, "Fluffy_Relations.Ideoligion".Translate().CapitalizeFirst(), font: GameFont.Medium);
@@ -459,11 +459,11 @@ namespace Fluffy_Relations {
 
         private void DoLeaderSelectionButton(Vector2 pos, Faction faction) {
             if (faction == Faction.OfPlayer && RelationsHelper.GetMayor() == null) {
-                Rect factionLeaderSelectRect = new Rect( pos.x, pos.y, SmallIconSize, SmallIconSize );
+                Rect factionLeaderSelectRect = new( pos.x, pos.y, SmallIconSize, SmallIconSize );
                 TooltipHandler.TipRegion(factionLeaderSelectRect, "Fluffy_Relations.SelectLeaderTip".Translate());
                 if (Widgets.ButtonImage(factionLeaderSelectRect, Resources.Edit)) {
                     // do leader selection dropdown.
-                    List<FloatMenuOption> options = new List<FloatMenuOption>();
+                    List<FloatMenuOption> options = new();
 
                     // pawns on maps
                     foreach (Pawn pawn in Find.Maps.SelectMany(m => m.mapPawns.FreeColonists)) {

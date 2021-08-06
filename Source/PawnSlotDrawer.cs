@@ -76,7 +76,7 @@ namespace Fluffy_Relations {
             Text.WordWrap = WW;
 
             // create rect
-            Rect labelRect = new Rect(
+            Rect labelRect = new(
                                      ((Constants.SlotSize - width) / 2f) + slot.xMin,
                                      slot.yMax - Constants.LabelHeight,
                                      width,

@@ -13,7 +13,7 @@ namespace Fluffy_Relations {
     public class Settings: ModSettings {
         #region Fields
 
-        public static Dictionary<string, object> values = new Dictionary<string, object>();
+        public static Dictionary<string, object> values = new();
         private static Vector2 _scrollposition = Vector2.zero;
         private static float _settingsHeight = 999f;
         private static readonly float rowHeight = 24f;

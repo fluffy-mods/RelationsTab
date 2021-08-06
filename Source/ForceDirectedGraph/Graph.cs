@@ -21,17 +21,17 @@ namespace Fluffy_Relations.ForceDirectedGraph {
         public static float THRESHOLD = .02f;
 
         public bool done;
-        private readonly List<Edge> edges = new List<Edge>();
+        private readonly List<Edge> edges = new();
         public static float idealDistance;
         private int iteration = 1;
-        public List<Node> nodes = new List<Node>();
-        private readonly Dictionary<Node, List<Node>> connections = new Dictionary<Node, List<Node>>();
+        public List<Node> nodes = new();
+        private readonly Dictionary<Node, List<Node>> connections = new();
         public Vector2 size;
         private float temperature = .1f;
-        private readonly Dictionary<Pawn, Node> _pawnNodes = new Dictionary<Pawn, Node>();
+        private readonly Dictionary<Pawn, Node> _pawnNodes = new();
 
 #if DEBUG
-        public static StringBuilder msg = new StringBuilder();
+        public static StringBuilder msg = new();
 #endif
 
         #endregion Fields
@@ -173,7 +173,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
             }
 
             // tidy up
-            Vector2 graphCentre = new Vector2(
+            Vector2 graphCentre = new(
                                           ((nodes.Where(n => !n.Frozen).Max(node => node.position.x) -
                                             nodes.Where(n => !n.Frozen).Min(node => node.position.x)) / 2f) +
                                           nodes.Where(n => !n.Frozen).Min(node => node.position.x),

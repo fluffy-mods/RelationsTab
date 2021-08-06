@@ -6,7 +6,7 @@
     "version": {
         "major": 3,
         "minor": 0,
-        "build": 113
+        "build": 115
     },
     "author": {
         "name": "Fluffy",
@@ -19,6 +19,15 @@
         "url": "https://github.com/fluffy-mods/RelationsTab"
     },
     "changelog": [
+        {
+            "date": "2021-08-06T20:27:00.000Z",
+            "message": "add ideoligion info and randomly sprinple some color",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "a48fe497f72fe7d3f37c060adee45432ed88e7be"
+        },
         {
             "date": "2021-08-05T19:14:15.000Z",
             "message": "fix missing label part on colony opinion of other factions",
@@ -141,12 +150,13 @@
         {
             "hash": "7506ce638bf6752a32b2eb4f82e857401d38d8ff",
             "author": "David Alexander Pfeiffer",
-            "description": "Update Fluffy_Relations.dll"
+            "description": "Update Fluffy_Relations.dll",
+            "suppressed": true
         },
         {
             "hash": "75f3ce5d034a4cb223b5ece187f5e3deabb4d068",
             "author": "David Alexander Pfeiffer",
-            "description": "Added ideology information on graph nodes and in faction panel"
+            "description": "add ideology information sections"
         }
     ],
     "contributors": {
@@ -194,14 +204,9 @@
         ],
         "David Alexander Pfeiffer": [
             {
-                "hash": "7506ce6",
-                "author": "David Alexander Pfeiffer",
-                "description": "Update Fluffy_Relations.dll"
-            },
-            {
                 "hash": "75f3ce5",
                 "author": "David Alexander Pfeiffer",
-                "description": "Added ideology information on graph nodes and in faction panel"
+                "description": "add ideology information sections"
             }
         ]
     }

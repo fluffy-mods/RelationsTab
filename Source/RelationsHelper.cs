@@ -18,7 +18,7 @@ namespace Fluffy_Relations {
 
         public static float OPINION_THRESHOLD_POS = 50f;
 
-        public static Dictionary<Pawn, List<string>> ThoughtsAbout = new Dictionary<Pawn, List<string>>();
+        public static Dictionary<Pawn, List<string>> ThoughtsAbout = new();
 
         private static HediffDef _majorHediffDef;
 
@@ -142,7 +142,7 @@ namespace Fluffy_Relations {
         }
 
         public static string GetTooltip(this Pawn pawn, Pawn other) {
-            StringBuilder tip = new StringBuilder();
+            StringBuilder tip = new();
             tip.Append(pawn.NameFullColored.Resolve());
             if (other != null && other != pawn) {
                 tip.Append("\n\n");
@@ -158,7 +158,7 @@ namespace Fluffy_Relations {
         }
 
         public static string GetTooltip(this Faction faction, Faction other) {
-            StringBuilder tip = new StringBuilder();
+            StringBuilder tip = new();
             tip.Append(faction.Name.Colorize(faction.Color));
             if (other != null && faction != other) {
                 tip.Append("\n\n");
@@ -254,7 +254,7 @@ namespace Fluffy_Relations {
                     }
 
                     // get distinct social thoughts
-                    List<ISocialThought> DistinctSocialThoughtGroups = new List<ISocialThought>();
+                    List<ISocialThought> DistinctSocialThoughtGroups = new();
                     thoughts.GetDistinctSocialThoughtGroups(pawn, DistinctSocialThoughtGroups);
                     foreach (ISocialThought t in DistinctSocialThoughtGroups) {
                         if (t is Thought thought && t.OpinionOffset() != 0) {
