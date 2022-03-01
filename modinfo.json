@@ -6,7 +6,7 @@
     "version": {
         "major": 3,
         "minor": 1,
-        "build": 115
+        "build": 117
     },
     "author": {
         "name": "Fluffy",
@@ -19,6 +19,24 @@
         "url": "https://github.com/fluffy-mods/RelationsTab"
     },
     "changelog": [
+        {
+            "date": "2022-02-26T16:08:34.000Z",
+            "message": "Update description",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "d9201faa4ad8bc38e8c1997970307d56a78d374d"
+        },
+        {
+            "date": "2021-08-06T20:35:42.000Z",
+            "message": "release v3.1.115",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "f63db7212de15023cc319e64245df3c2b54bfa85"
+        },
         {
             "date": "2021-08-06T20:35:05.000Z",
             "message": "oh god no that preview image wasn't ready",
