@@ -5,8 +5,8 @@
     "url": "https://github.com/fluffy-mods/RelationsTab",
     "version": {
         "major": 3,
-        "minor": 1,
-        "build": 118
+        "minor": 2,
+        "build": 119
     },
     "author": {
         "name": "Fluffy",
@@ -19,6 +19,24 @@
         "url": "https://github.com/fluffy-mods/RelationsTab"
     },
     "changelog": [
+        {
+            "date": "2022-10-16T20:15:24.000Z",
+            "message": "initial build for 1.4",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "8b71a38e98755f3f61d8467ed0b2f4a1f7da63da"
+        },
+        {
+            "date": "2022-10-16T20:09:13.000Z",
+            "message": "Brazilian Portuguese translations",
+            "author": {
+                "name": "Lobo Metalúrgico",
+                "email": "43734867+LoboMetalurgico@users.noreply.github.com"
+            },
+            "hash": "c8e875f682d2215fbbe259c0f3009a1969ffaebf"
+        },
         {
             "date": "2022-02-26T16:08:34.000Z",
             "message": "Update description",
@@ -184,6 +202,11 @@
             "hash": "75f3ce5d034a4cb223b5ece187f5e3deabb4d068",
             "author": "David Alexander Pfeiffer",
             "description": "add ideology information sections"
+        },
+        {
+            "hash": "c8e875f682d2215fbbe259c0f3009a1969ffaebf",
+            "author": "Lobo Metalúrgico",
+            "description": "Brazilian Portuguese translations"
         }
     ],
     "contributors": {
@@ -234,6 +257,13 @@
                 "hash": "75f3ce5",
                 "author": "David Alexander Pfeiffer",
                 "description": "add ideology information sections"
+            }
+        ],
+        "Lobo Metalúrgico": [
+            {
+                "hash": "c8e875f",
+                "author": "Lobo Metalúrgico",
+                "description": "Brazilian Portuguese translations"
             }
         ]
     },
