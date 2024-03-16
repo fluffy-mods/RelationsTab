@@ -23,7 +23,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
             // apply force in direction of other
             velocity += force * this.DirectionTo(other);
 
-#if DEBUG
+#if DEBUG_GRAPH
             Graph.msg.AppendLine("\t\tOpinion: " + opinion + ", Force: " + force + ", Vector: " + (force * this.DirectionTo(other)));
 #endif
         }

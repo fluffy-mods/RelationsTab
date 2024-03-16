@@ -58,7 +58,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
             float force = Graph.ATTRACTIVE_CONSTANT * Mathf.Max( this.DistanceTo( other ) - Graph.idealDistance, 0f );
             velocity += force * this.DirectionTo(other);
 
-#if DEBUG
+#if DEBUG_GRAPH
             Graph.msg.AppendLine("\t\tForce: " + force + ", Vector: " + (force * this.DirectionTo(other)));
 #endif
         }
@@ -72,7 +72,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
             float force = -(  Graph.REPULSIVE_CONSTANT / Mathf.Pow( this.DistanceTo( other ), 2 )  * Graph.idealDistance );
             velocity += force * this.DirectionTo(other);
 
-#if DEBUG
+#if DEBUG_GRAPH
             Graph.msg.AppendLine("\t\tRepulsion from " + other.pawn.Name.ToStringShort + other.position + "; Distance: " + this.DistanceTo(other) + " (" + (Mathf.Pow(this.DistanceTo(other), 2) * Graph.idealDistance) + "), Force: " + force + ", Vector: " + (force * this.DirectionTo(other)));
 #endif
         }

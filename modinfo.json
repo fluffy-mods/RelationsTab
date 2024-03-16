@@ -4,9 +4,9 @@
     "targetDir": "FluffyRelations",
     "url": "https://github.com/fluffy-mods/RelationsTab",
     "version": {
-        "major": 3,
-        "minor": 2,
-        "build": 122
+        "major": 4,
+        "minor": 1,
+        "build": 124
     },
     "author": {
         "name": "Fluffy",
@@ -19,6 +19,15 @@
         "url": "https://github.com/fluffy-mods/RelationsTab"
     },
     "changelog": [
+        {
+            "date": "2024-03-16T13:58:11.000Z",
+            "message": "update preview image, move some debug behind trace",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "8cb91d2a9b93876ff03643646f6a1c3d6b411d20"
+        },
         {
             "date": "2022-10-16T20:16:04.000Z",
             "message": "release v3.2.119",
