@@ -6,7 +6,7 @@
     "version": {
         "major": 3,
         "minor": 2,
-        "build": 119
+        "build": 122
     },
     "author": {
         "name": "Fluffy",
@@ -19,6 +19,15 @@
         "url": "https://github.com/fluffy-mods/RelationsTab"
     },
     "changelog": [
+        {
+            "date": "2022-10-16T20:16:04.000Z",
+            "message": "release v3.2.119",
+            "author": {
+                "name": "Fluffy",
+                "email": "fluffy.l2032@gmail.com"
+            },
+            "hash": "945f8cf4c919e7d213b4095efddabadc93204393"
+        },
         {
             "date": "2022-10-16T20:15:24.000Z",
             "message": "initial build for 1.4",
@@ -274,5 +283,6 @@
             "license": "BY-NC",
             "url": "https://www.freepik.com/"
         }
-    ]
+    ],
+    "publishedFileId": "709317151"
 }

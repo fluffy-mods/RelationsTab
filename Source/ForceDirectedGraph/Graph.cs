@@ -118,7 +118,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
                 return;
             }
 
-#if DEBUG
+#if TRACE
             msg = new StringBuilder();
             msg.AppendLine("Iteration: " + iteration);
 #endif
@@ -128,7 +128,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
 
             // calculate attractive forces
             foreach (Edge edge in edges) {
-#if DEBUG
+#if TRACE
                 msg.AppendLine("\tAttractive force between " + edge.nodeA.pawn.Name.ToStringShort + edge.nodeA.position + " and " + edge.nodeB.pawn.Name.ToStringShort + edge.nodeB.position);
 #endif
                 edge.nodeA.AttractedTo(edge.nodeB);
@@ -137,7 +137,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
 
             // calculate repulsive forces
             foreach (Node node in nodes) {
-#if DEBUG
+#if TRACE
                 msg.AppendLine("\tRepulsion for " + node.pawn.Name.ToStringShort + node.position);
 #endif
                 foreach (Node other in nodes) {
@@ -182,7 +182,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
                                           nodes.Where(n => !n.Frozen).Min(node => node.position.y));
             Vector2 offset = (size / 2f) - graphCentre;
 
-#if DEBUG
+#if TRACE
             msg.AppendLine("Centre: " + graphCentre + ", offset: " + (size / 2f));
 #endif
             foreach (Node node in nodes) {
@@ -197,7 +197,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
                 //if ( !node.frozen )
                 //    node.Clamp( size );
 
-#if DEBUG
+#if TRACE
                 msg.AppendLine("\t" + node.pawn.LabelShort + ", velocity: " + node.velocity + ", position: " + node.position);
             }
             Log.Message(msg.ToString());
@@ -213,7 +213,7 @@ namespace Fluffy_Relations.ForceDirectedGraph {
                                          Constants.SlotSize * 5f);
             temperature = MAX_TEMPERATURE * (1f - (1f / MAX_ITERATIONS * iteration));
 
-#if DEBUG
+#if TRACE
             msg.AppendLine("idealDistance: " + idealDistance + ", temperature: " + temperature);
 #endif
         }
